@@ -1,0 +1,11 @@
+.cloc/
+  - data/
+  - charts/
+  - logs/
+  - config.json
+
+1. Download dependencies
+2. Initialize .cloc repo
+3. Set up git hook
+
+
