@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -12,20 +13,19 @@ func main() {
 		log.Fatal("clocviz: Usage 'clocviz [src] [optional: git hash/branch]'")
 	}
 
-	tmp := utils.CreateTempFile()
-	defer os.Remove(tmp.Name())
-
 	in := os.Args[1]
-	out := tmp.Name()
 	var gitObj string
 	if len(os.Args) == 3 {
 		gitObj = os.Args[2]
 	}
 
-	err := utils.RunCloc(in, out, gitObj)
+	raw, err := utils.RunCloc(in, gitObj)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	clean := utils.ParseResults(raw)
+	fmt.Println(clean)
 
 	os.Exit(0)
 }
