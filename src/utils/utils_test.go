@@ -27,20 +27,22 @@ func TestRunCloc(t *testing.T) {
 	}
 
 	table := []struct {
-		in       string
-		out      string
-		gitObj   string
+		in     string
+		gitObj string
+
+		want     string
 		expected error
 	}{
-		{in: dir, out: filepath.Join(dir, "tmpFile"), gitObj: "", expected: nil},
-		{in: "fakeDir", out: filepath.Join(dir, "tmpFile"), gitObj: "", expected: errors.New("Source does not exist")},
-		{in: dir, out: filepath.Join(dir, "tmpFile"), gitObj: "NOTHEAD", expected: errors.New("Not a valid git object")},
+		{in: dir, gitObj: "", expected: nil},
+		{in: "fakeDir", gitObj: "", expected: errors.New("Source does not exist")},
+		{in: dir, gitObj: "NOTHEAD", expected: errors.New("Not a valid git object")},
 	}
 
 	for i, test := range table {
 		name := fmt.Sprintf("Test %d - RunCloc", i+1)
 		t.Run(name, func(t *testing.T) {
-			err := RunCloc(test.in, test.out, test.gitObj)
+			// Not testing output since we depend on cloc running accurately
+			_, err := RunCloc(test.in, test.gitObj)
 			if test.expected == nil && err != nil || test.expected != nil && err == nil {
 				t.Errorf("%s: Expected %v, received %v", name, test.expected, err)
 			}
