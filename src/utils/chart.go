@@ -25,7 +25,7 @@ func (c *ChartObj) Update(path []string, color string, value int) {
 	var child *ChartObj
 	curr := path[0]
 
-	child, isPresent := isInSlice(curr, c.Children)
+	isPresent, child := isInSlice(curr, c.Children)
 	if !isPresent {
 		if len(path) == 1 {
 			child = NewChartObj(curr, color, value)

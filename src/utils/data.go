@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -33,41 +34,59 @@ func RunCloc(in string, gitObj string) (string, error) {
 func ParseResults(data string) [][]string {
 	var out [][]string
 	rows := strings.Split(data, "\n")
-	for i := 5; i < len(rows)-2; i++ {
+	for i := 0; i < len(rows); i++ {
 		row := strings.Split(rows[i], ",")
-		out = append(out, row)
+		if len(row) == 5 && row[0] != "SUM" {
+			out = append(out, row)
+		}
 	}
 	return out
 }
 
-func GetLinesByFileJSON(data [][]string) {
-
-}
-
-func GetLinesByLangJSON(data [][]string) {
-	root := NewChartObj("Languages", "", 0, make([]ChartObj, 0))
+func GetLinesByFile(data [][]string) string {
+	root := NewChartObj("root", "#000000", 0)
 
 	for _, row := range data {
 		lang := row[0]
-		name := row[1]
-		value, _ := strconv.Atoi(row[4])
-		color := getLangColor(lang)
-
-		if contains(lang, root.Children) {
-
-		} else {
-			child := NewChartObj(lang, color, 0, make([]ChartObj, 0))
-			root.Children = append(root.Children, child)
-
+		path := strings.Split(row[1], "/")[1:]
+		color := GetLangColor(lang)
+		value, err := strconv.Atoi(row[4])
+		if err != nil {
+			log.Fatal(err)
 		}
+
+		root.Update(path, color, value)
 	}
+
+	return root.ToJSON()
 }
 
-func contains(needle string, haystack []ChartObj) bool {
-	for _, h := range haystack {
-		if needle == h.Name {
-			return true
+func GetLinesByLang(data [][]string) string {
+	root := NewChartObj("root", "#000000", 0)
+
+	for _, row := range data {
+		lang := row[0]
+		path := []string{lang}
+		for _, str := range strings.Split(row[1], "/")[1:] {
+			path = append(path, str)
+		}
+		color := GetLangColor(row[0])
+		value, err := strconv.Atoi(row[4])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		root.Update(path, color, value)
+	}
+
+	return root.ToJSON()
+}
+
+func isInSlice(target string, slice []*ChartObj) (bool, *ChartObj) {
+	for _, elem := range slice {
+		if target == elem.Name {
+			return true, elem
 		}
 	}
-	return false
+	return false, nil
 }
