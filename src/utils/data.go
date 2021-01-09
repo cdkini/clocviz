@@ -44,7 +44,7 @@ func ParseResults(data string) [][]string {
 }
 
 func GetLinesByFile(data [][]string) string {
-	root := NewChartObj("root", "#000000", 0)
+	root := NewDirectory("root", "#000000")
 
 	for _, row := range data {
 		lang := row[0]
@@ -55,14 +55,14 @@ func GetLinesByFile(data [][]string) string {
 			log.Fatal(err)
 		}
 
-		root.Update(path, color, value)
+		root.Update(path, color, value, lang)
 	}
 
 	return root.ToJSON()
 }
 
 func GetLinesByLang(data [][]string) string {
-	root := NewChartObj("root", "#000000", 0)
+	root := NewDirectory("root", "#000000")
 
 	for _, row := range data {
 		lang := row[0]
@@ -76,16 +76,21 @@ func GetLinesByLang(data [][]string) string {
 			log.Fatal(err)
 		}
 
-		root.Update(path, color, value)
+		root.Update(path, color, value, lang)
 	}
 
 	return root.ToJSON()
 }
 
-func isInSlice(target string, slice []*ChartObj) (bool, *ChartObj) {
-	for _, elem := range slice {
-		if target == elem.Name {
-			return true, elem
+func isInSlice(target string, slice []ChartObj) (bool, ChartObj) {
+	for _, obj := range slice {
+		switch v := obj.(type) {
+		case *Directory:
+			if target == v.Name {
+				return true, v
+			}
+		case *File:
+			continue
 		}
 	}
 	return false, nil

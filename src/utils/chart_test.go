@@ -8,60 +8,66 @@ import (
 
 func TestUpdate(t *testing.T) {
 	table := []struct {
-		path  []string
-		color string
-		value int
+		path     []string
+		color    string
+		value    int
+		language string
 
-		want *ChartObj
+		want ChartObj
 	}{
 		// Test usage in GetLinesByFile
 		{
-			path:  []string{"main.go"},
-			color: "#375eab",
-			value: 5,
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"main.go", "#375eab", 5, []*ChartObj{}}}}},
+			path:     []string{"main.go"},
+			color:    "#375eab",
+			value:    5,
+			language: "Go",
+			want: &Directory{"root", "#000000", []ChartObj{
+				&File{"main.go", "#375eab", 5, "Go"}}}},
 		{
-			path:  []string{"src", "main.py"},
-			color: "#3572A5",
-			value: 232,
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"src", "#3572A5", 0, []*ChartObj{
-					{"main.py", "#3572A5", 232, []*ChartObj{}}}}}}},
+			path:     []string{"src", "main.py"},
+			color:    "#3572A5",
+			value:    232,
+			language: "Python",
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"src", "#3572A5", []ChartObj{
+					&File{"main.py", "#3572A5", 232, "Python"}}}}}},
 		{
-			path:  []string{"src", "main", "main.c"},
-			color: "#555555",
-			value: 165,
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"src", "#555555", 0, []*ChartObj{
-					{"main", "#555555", 0, []*ChartObj{
-						{"main.c", "#555555", 165, []*ChartObj{}}}}}}}}},
+			path:     []string{"src", "main", "main.c"},
+			color:    "#555555",
+			value:    165,
+			language: "C",
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"src", "#555555", []ChartObj{
+					&Directory{"main", "#555555", []ChartObj{
+						&File{"main.c", "#555555", 165, "C"}}}}}}}},
 
 		// Test usage in GetLinesByLang
 		{
-			path:  []string{"Python", "src", "main.py"},
-			color: "#3572A5",
-			value: 232,
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"Python", "#3572A5", 0, []*ChartObj{
-					{"src", "#3572A5", 0, []*ChartObj{
-						{"main.py", "#3572A5", 232, []*ChartObj{}}}}}}}}},
+			path:     []string{"Python", "src", "main.py"},
+			color:    "#3572A5",
+			value:    232,
+			language: "Python",
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"Python", "#3572A5", []ChartObj{
+					&Directory{"src", "#3572A5", []ChartObj{
+						&File{"main.py", "#3572A5", 232, "Python"}}}}}}}},
 		{
-			path:  []string{"C", "src", "main", "main.c"},
-			color: "#555555",
-			value: 165,
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"C", "#555555", 0, []*ChartObj{
-					{"src", "#555555", 0, []*ChartObj{
-						{"main", "#555555", 0, []*ChartObj{
-							{"main.c", "#555555", 165, []*ChartObj{}}}}}}}}}}},
+			path:     []string{"C", "src", "main", "main.c"},
+			color:    "#555555",
+			value:    165,
+			language: "C",
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"C", "#555555", []ChartObj{
+					&Directory{"src", "#555555", []ChartObj{
+						&Directory{"main", "#555555", []ChartObj{
+							&File{"main.c", "#555555", 165, "C"}}}}}}}}}},
 	}
 
 	for i, test := range table {
-		c := NewChartObj("root", "#000000", 0)
+		c := NewDirectory("root", "#000000")
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
-			c.Update(test.path, test.color, test.value)
+			c.Update(test.path, test.color, test.value, test.language)
 			if !reflect.DeepEqual(c, test.want) {
 				t.Errorf("%s: expected %+v, received %+v", name, test.want, c)
 			}
@@ -70,68 +76,79 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestPersistentUpdate(t *testing.T) {
-	table := []struct {
-		paths  [][]string
-		colors []string
-		values []int
+	type MockInput struct {
+		path     []string
+		color    string
+		value    int
+		language string
+	}
 
-		want *ChartObj
+	table := []struct {
+		inputs []MockInput
+
+		want ChartObj
 	}{
 		// Test usage in GetLinesByFile
 		{
-			paths:  [][]string{{"src", "main", "a.py"}, {"src", "main", "b.py"}, {"src", "main", "c.py"}},
-			colors: []string{"#375eab", "#375eab", "#375eab"},
-			values: []int{10, 20, 30},
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"src", "#375eab", 0, []*ChartObj{
-					{"main", "#375eab", 0, []*ChartObj{
-						{"a.py", "#375eab", 10, []*ChartObj{}},
-						{"b.py", "#375eab", 20, []*ChartObj{}},
-						{"c.py", "#375eab", 30, []*ChartObj{}}}}}}}}},
+			inputs: []MockInput{
+				{[]string{"src", "main", "a.py"}, "#375eab", 10, "Python"},
+				{[]string{"src", "main", "b.py"}, "#375eab", 20, "Python"},
+				{[]string{"src", "main", "c.py"}, "#375eab", 30, "Python"}},
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"src", "#375eab", []ChartObj{
+					&Directory{"main", "#375eab", []ChartObj{
+						&File{"a.py", "#375eab", 10, "Python"},
+						&File{"b.py", "#375eab", 20, "Python"},
+						&File{"c.py", "#375eab", 30, "Python"}}}}}}}},
 		{
-			paths:  [][]string{{"src", "dirA", "a.py"}, {"src", "dirB", "b.py"}, {"src", "dirC", "c.py"}},
-			colors: []string{"#375eab", "#375eab", "#375eab"},
-			values: []int{10, 20, 30},
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"src", "#375eab", 0, []*ChartObj{
-					{"dirA", "#375eab", 0, []*ChartObj{
-						{"a.py", "#375eab", 10, []*ChartObj{}}}},
-					{"dirB", "#375eab", 0, []*ChartObj{
-						{"b.py", "#375eab", 20, []*ChartObj{}}}},
-					{"dirC", "#375eab", 0, []*ChartObj{
-						{"c.py", "#375eab", 30, []*ChartObj{}}}}}}}}},
+			inputs: []MockInput{
+				{[]string{"src", "dirA", "a.py"}, "#375eab", 10, "Python"},
+				{[]string{"src", "dirB", "b.py"}, "#375eab", 20, "Python"},
+				{[]string{"src", "dirC", "c.py"}, "#375eab", 30, "Python"}},
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"src", "#375eab", []ChartObj{
+					&Directory{"dirA", "#375eab", []ChartObj{
+						&File{"a.py", "#375eab", 10, "Python"}}},
+					&Directory{"dirB", "#375eab", []ChartObj{
+						&File{"b.py", "#375eab", 20, "Python"}}},
+					&Directory{"dirC", "#375eab", []ChartObj{
+						&File{"c.py", "#375eab", 30, "Python"}}}}}}}},
+
+		// Test usage in GetLinesByLang
 		{
-			paths:  [][]string{{"Python", "src", "main", "a.py"}, {"Python", "src", "main", "b.py"}, {"Python", "src", "main", "c.py"}},
-			colors: []string{"#375eab", "#375eab", "#375eab"},
-			values: []int{10, 20, 30},
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"Python", "#375eab", 0, []*ChartObj{
-					{"src", "#375eab", 0, []*ChartObj{
-						{"main", "#375eab", 0, []*ChartObj{
-							{"a.py", "#375eab", 10, []*ChartObj{}},
-							{"b.py", "#375eab", 20, []*ChartObj{}},
-							{"c.py", "#375eab", 30, []*ChartObj{}}}}}}}}}}},
+			inputs: []MockInput{
+				{[]string{"Python", "src", "main", "a.py"}, "#375eab", 10, "Python"},
+				{[]string{"Python", "src", "main", "b.py"}, "#375eab", 20, "Python"},
+				{[]string{"Python", "src", "main", "c.py"}, "#375eab", 30, "Python"}},
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"Python", "#375eab", []ChartObj{
+					&Directory{"src", "#375eab", []ChartObj{
+						&Directory{"main", "#375eab", []ChartObj{
+							&File{"a.py", "#375eab", 10, "Python"},
+							&File{"b.py", "#375eab", 20, "Python"},
+							&File{"c.py", "#375eab", 30, "Python"}}}}}}}}}},
 		{
-			paths:  [][]string{{"Python", "src", "dirA", "a.py"}, {"Python", "src", "dirB", "b.py"}, {"Python", "src", "dirC", "c.py"}},
-			colors: []string{"#375eab", "#375eab", "#375eab"},
-			values: []int{10, 20, 30},
-			want: &ChartObj{"root", "#000000", 0, []*ChartObj{
-				{"Python", "#375eab", 0, []*ChartObj{
-					{"src", "#375eab", 0, []*ChartObj{
-						{"dirA", "#375eab", 0, []*ChartObj{
-							{"a.py", "#375eab", 10, []*ChartObj{}}}},
-						{"dirB", "#375eab", 0, []*ChartObj{
-							{"b.py", "#375eab", 20, []*ChartObj{}}}},
-						{"dirC", "#375eab", 0, []*ChartObj{
-							{"c.py", "#375eab", 30, []*ChartObj{}}}}}}}}}}},
+			inputs: []MockInput{
+				{[]string{"Python", "src", "dirA", "a.py"}, "#375eab", 10, "Python"},
+				{[]string{"Python", "src", "dirB", "b.py"}, "#375eab", 20, "Python"},
+				{[]string{"Python", "src", "dirC", "c.py"}, "#375eab", 30, "Python"}},
+			want: &Directory{"root", "#000000", []ChartObj{
+				&Directory{"Python", "#375eab", []ChartObj{
+					&Directory{"src", "#375eab", []ChartObj{
+						&Directory{"dirA", "#375eab", []ChartObj{
+							&File{"a.py", "#375eab", 10, "Python"}}},
+						&Directory{"dirB", "#375eab", []ChartObj{
+							&File{"b.py", "#375eab", 20, "Python"}}},
+						&Directory{"dirC", "#375eab", []ChartObj{
+							&File{"c.py", "#375eab", 30, "Python"}}}}}}}}}},
 	}
 
 	for i, test := range table {
-		c := NewChartObj("root", "#000000", 0)
+		c := NewDirectory("root", "#000000")
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
-			for i := 0; i < len(test.paths); i++ {
-				c.Update(test.paths[i], test.colors[i], test.values[i])
+			for _, input := range test.inputs {
+				c.Update(input.path, input.color, input.value, input.language)
 			}
 			if !reflect.DeepEqual(c, test.want) {
 				t.Errorf("%s: expected %+v, received %+v", name, test.want, c)
