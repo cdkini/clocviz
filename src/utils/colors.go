@@ -10,7 +10,10 @@ func GetLangColor(lang string) string {
 	if color, ok := COLORS[lang]; ok {
 		return color
 	}
-	return getRandomColorInHex()
+	// If color is not in COLORS, we save a random color for future usage.
+	rand := getRandomColorInHex()
+	COLORS[lang] = rand
+	return rand
 }
 
 func getRandomColorInHex() string {

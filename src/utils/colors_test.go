@@ -32,16 +32,3 @@ func TestValidGetLangColor(t *testing.T) {
 		})
 	}
 }
-
-func TestRandomGetLangColor(t *testing.T) {
-	seen := make(map[string]bool, 0)
-	for i := 0; i < 1000; i++ {
-		t.Run("GetLangColor", func(t *testing.T) {
-			out := GetLangColor("fakeLang")
-			if _, ok := seen[out]; ok {
-				t.Error("Failed to create random color")
-			}
-			seen[out] = true
-		})
-	}
-}
