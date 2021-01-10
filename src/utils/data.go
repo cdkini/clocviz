@@ -43,7 +43,7 @@ func ParseResults(data string) [][]string {
 	return out
 }
 
-func GetLinesByFile(data [][]string) string {
+func GetLinesByFile(data [][]string) *Directory {
 	root := NewDirectory("root", "#000000")
 
 	for _, row := range data {
@@ -58,10 +58,10 @@ func GetLinesByFile(data [][]string) string {
 		root.Update(path, color, value, lang)
 	}
 
-	return root.ToJSON()
+	return root
 }
 
-func GetLinesByLang(data [][]string) string {
+func GetLinesByLang(data [][]string) *Directory {
 	root := NewDirectory("root", "#000000")
 
 	for _, row := range data {
@@ -79,7 +79,7 @@ func GetLinesByLang(data [][]string) string {
 		root.Update(path, color, value, lang)
 	}
 
-	return root.ToJSON()
+	return root
 }
 
 func isInSlice(target string, slice []ChartObj) (bool, ChartObj) {
