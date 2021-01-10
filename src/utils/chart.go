@@ -1,13 +1,13 @@
 package utils
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 )
 
 type ChartObj interface {
-	ToJSON() string
 	String() string
 }
 
@@ -22,14 +22,6 @@ func NewFile(name string, color string, value int, language string) *File {
 	return &File{name, color, value, language}
 }
 
-func (f *File) ToJSON() string {
-	json, err := json.Marshal(f)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(json)
-}
-
 func (f *File) String() string {
 	return fmt.Sprintf("%v, %v, %v", f.Name, f.Color, f.Value)
 }
@@ -42,14 +34,6 @@ type Directory struct {
 
 func NewDirectory(name string, color string) *Directory {
 	return &Directory{name, color, make([]ChartObj, 0)}
-}
-
-func (d *Directory) ToJSON() string {
-	json, err := json.Marshal(d)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(json)
 }
 
 func (d *Directory) String() string {
@@ -76,4 +60,43 @@ func (d *Directory) Update(path []string, color string, value int, language stri
 	case *File:
 		return
 	}
+}
+
+func GetLinesByFile(data [][]string) *Directory {
+	root := NewDirectory("root", "#000000")
+
+	for _, row := range data {
+		lang := row[0]
+		path := strings.Split(row[1], "/")[1:]
+		color := GetLangColor(lang)
+		value, err := strconv.Atoi(row[4])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		root.Update(path, color, value, lang)
+	}
+
+	return root
+}
+
+func GetLinesByLang(data [][]string) *Directory {
+	root := NewDirectory("root", "#000000")
+
+	for _, row := range data {
+		lang := row[0]
+		path := []string{lang}
+		for _, str := range strings.Split(row[1], "/")[1:] {
+			path = append(path, str)
+		}
+		color := GetLangColor(row[0])
+		value, err := strconv.Atoi(row[4])
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		root.Update(path, color, value, lang)
+	}
+
+	return root
 }

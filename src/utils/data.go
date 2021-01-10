@@ -2,9 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"os/exec"
@@ -41,45 +39,6 @@ func ParseResults(data string) [][]string {
 		}
 	}
 	return out
-}
-
-func GetLinesByFile(data [][]string) *Directory {
-	root := NewDirectory("root", "#000000")
-
-	for _, row := range data {
-		lang := row[0]
-		path := strings.Split(row[1], "/")[1:]
-		color := GetLangColor(lang)
-		value, err := strconv.Atoi(row[4])
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		root.Update(path, color, value, lang)
-	}
-
-	return root
-}
-
-func GetLinesByLang(data [][]string) *Directory {
-	root := NewDirectory("root", "#000000")
-
-	for _, row := range data {
-		lang := row[0]
-		path := []string{lang}
-		for _, str := range strings.Split(row[1], "/")[1:] {
-			path = append(path, str)
-		}
-		color := GetLangColor(row[0])
-		value, err := strconv.Atoi(row[4])
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		root.Update(path, color, value, lang)
-	}
-
-	return root
 }
 
 func isInSlice(target string, slice []ChartObj) (bool, ChartObj) {
