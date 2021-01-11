@@ -2,8 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"math/rand"
+	"log"
+	"strconv"
 	"time"
+
+	"math/rand"
 )
 
 func GetLangColor(lang string) string {
@@ -14,6 +17,20 @@ func GetLangColor(lang string) string {
 	rand := getRandomColorInHex()
 	COLORS[lang] = rand
 	return rand
+}
+
+type RGB struct {
+	red   int
+	green int
+	blue  int
+}
+
+func GradateHex(hex string, percentage float32) string {
+	rgb := hexToRGB(hex)
+	red := strconv.FormatInt(int64(float32(rgb.red)*percentage), 16)
+	green := strconv.FormatInt(int64(float32(rgb.green)*percentage), 16)
+	blue := strconv.FormatInt(int64(float32(rgb.blue)*percentage), 16)
+	return fmt.Sprintf("#%v%v%v", red, green, blue)
 }
 
 func getRandomColorInHex() string {
@@ -31,6 +48,15 @@ func getHex(num int) string {
 		hex = "0" + hex
 	}
 	return hex
+}
+
+func hexToRGB(hex string) *RGB {
+	rgb := &RGB{}
+	_, err := fmt.Sscanf(hex, "#%02x%02x%02x", &rgb.red, &rgb.green, &rgb.blue)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return rgb
 }
 
 // Associations between language name and official color (in hex)

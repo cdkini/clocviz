@@ -32,3 +32,25 @@ func TestValidGetLangColor(t *testing.T) {
 		})
 	}
 }
+
+func TestGradateHex(t *testing.T) {
+	table := []struct {
+		hex        string
+		percentage float32
+
+		want string
+	}{
+		{hex: "#375eab", percentage: 1.2, want: "#4270cd"},
+		{hex: "#375eab", percentage: 1.0, want: "#375eab"},
+		{hex: "#375eab", percentage: 0.8, want: "#2c4b88"},
+	}
+	for i, test := range table {
+		name := fmt.Sprintf("Test %d - GradateHex", i+1)
+		t.Run(name, func(t *testing.T) {
+			out := GradateHex(test.hex, test.percentage)
+			if out != test.want {
+				t.Errorf("%s: Expected %s, received %s", name, test.want, out)
+			}
+		})
+	}
+}
