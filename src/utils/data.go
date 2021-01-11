@@ -14,6 +14,13 @@ import (
 // Takes an optional git hash or branch; defaults to HEAD state if not provided.
 func RunCloc(in string, gitObj string) (string, error) {
 	if _, err := os.Stat(in); os.IsNotExist(err) {
+		return runClocOnGitRepo(in, gitObj)
+	}
+	return runClocOnLocalDir(in, gitObj)
+}
+
+func runClocOnLocalDir(in string, gitObj string) (string, error) {
+	if _, err := os.Stat(in); os.IsNotExist(err) {
 		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Invalid path '%s' passed", in))
 	}
 	if len(gitObj) == 0 {
@@ -27,7 +34,7 @@ func RunCloc(in string, gitObj string) (string, error) {
 	}
 }
 
-func RunClocOnGitRepo(in string, gitObj string) (string, error) {
+func runClocOnGitRepo(in string, gitObj string) (string, error) {
 	repo := fmt.Sprintf("git://github.com/%s.git", in)
 
 	clone := exec.Command("git", "clone", repo)
@@ -40,7 +47,7 @@ func RunClocOnGitRepo(in string, gitObj string) (string, error) {
 		os.RemoveAll(dir)
 	}()
 
-	return RunCloc(dir, gitObj)
+	return runClocOnLocalDir(dir, gitObj)
 }
 
 // ParseResults evaluates the cloc output string and converts it an easier-to-use format.

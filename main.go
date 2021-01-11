@@ -1,11 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/cdkini/clocviz/src/utils"
+	"github.com/cdkini/clocviz/src/visuals"
 )
 
 func main() {
@@ -25,7 +25,9 @@ func main() {
 	}
 
 	clean := utils.ParseResults(raw)
-	fmt.Println(clean)
+	data := utils.GetLinesByLang(clean)
+	visuals.GenerateHTML("Test", data)
+	utils.OpenBrowser("out.html")
 
 	os.Exit(0)
 }
