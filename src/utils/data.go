@@ -27,6 +27,22 @@ func RunCloc(in string, gitObj string) (string, error) {
 	}
 }
 
+func RunClocOnGitRepo(in string, gitObj string) (string, error) {
+	repo := fmt.Sprintf("git://github.com/%s.git", in)
+
+	clone := exec.Command("git", "clone", repo)
+	if _, err := clone.Output(); err != nil {
+		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Could not find git repo '%s'", in))
+	}
+
+	dir := strings.Split(in, "/")[1]
+	defer func() {
+		os.RemoveAll(dir)
+	}()
+
+	return RunCloc(dir, gitObj)
+}
+
 // ParseResults evaluates the cloc output string and converts it an easier-to-use format.
 // Unnecessary rows are deleted and the result is saved as a [][]string.
 func ParseResults(data string) [][]string {
