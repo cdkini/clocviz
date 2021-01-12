@@ -41,6 +41,10 @@ func (d *Directory) String() string {
 }
 
 func (d *Directory) Update(path []string, color string, value int, language string) {
+	if len(path) == 0 {
+		return
+	}
+
 	var child ChartObj
 	curr := path[0]
 
