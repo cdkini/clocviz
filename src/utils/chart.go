@@ -46,23 +46,25 @@ func (d *Directory) Update(path []string, color string, value int, language stri
 	}
 
 	var child ChartObj
-	curr := path[0]
-
-	isPresent, child := isInSlice(curr, d.Children)
-	if !isPresent {
-		if len(path) == 1 {
-			child = NewFile(curr, color, value, language)
-		} else {
-			child = NewDirectory(curr, color)
-		}
-		d.Children = append(d.Children, child)
-	}
+	_, child = isInSlice(path[0], d.Children)
 
 	switch v := child.(type) {
+	// Already exists so we go down the path
 	case *Directory:
 		v.Update(path[1:], color, value, language)
 	case *File:
 		return
+
+	// Not an existing child so a new node is created
+	default:
+		if len(path) == 1 {
+			file := NewFile(path[0], color, value, language)
+			d.Children = append(d.Children, file)
+		} else {
+			dir := NewDirectory(path[0], color)
+			d.Children = append(d.Children, dir)
+			dir.Update(path[1:], color, value, language)
+		}
 	}
 }
 
