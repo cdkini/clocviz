@@ -12,21 +12,18 @@ import (
 
 // RunCloc runs the 'cloc' tool on a target dir and writes STDOUT as a string.
 // Takes an optional git hash or branch; defaults to HEAD state if not provided.
-func RunCloc(in string, gitObj string) (string, error) {
+func RunCloc(in string) (string, error) {
 	if _, err := os.Stat(in); os.IsNotExist(err) {
-		return runClocOnGitRepo(in, gitObj)
+		return runClocOnGitRepo(in)
 	}
-	return runClocOnLocalDir(in, gitObj)
+	return runClocOnLocalDir(in)
 }
 
-func runClocOnLocalDir(in string, gitObj string) (string, error) {
+func runClocOnLocalDir(in string) (string, error) {
 	if _, err := os.Stat(in); os.IsNotExist(err) {
 		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Invalid path '%s' passed", in))
 	}
-	if len(gitObj) == 0 {
-		gitObj = "."
-	}
-	cloc := exec.Command("cloc", in, "--csv", "--by-file", "--git", gitObj)
+	cloc := exec.Command("cloc", in, "--csv", "--by-file")
 	if out, err := cloc.Output(); err != nil {
 		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Could not write data to %s", out))
 	} else {
@@ -34,7 +31,7 @@ func runClocOnLocalDir(in string, gitObj string) (string, error) {
 	}
 }
 
-func runClocOnGitRepo(in string, gitObj string) (string, error) {
+func runClocOnGitRepo(in string) (string, error) {
 	repo := fmt.Sprintf("git://github.com/%s.git", in)
 
 	clone := exec.Command("git", "clone", repo)
@@ -47,7 +44,7 @@ func runClocOnGitRepo(in string, gitObj string) (string, error) {
 		os.RemoveAll(dir)
 	}()
 
-	return runClocOnLocalDir(dir, gitObj)
+	return runClocOnLocalDir(dir)
 }
 
 // ParseResults evaluates the cloc output string and converts it an easier-to-use format.
