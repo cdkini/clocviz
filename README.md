@@ -8,7 +8,7 @@ clocviz is an extension of [cloc](https://github.com/AlDanial/cloc).
 - [Usage](#Usage)
 - [Contributing](#Contributing)
 - [Credits](#Credits)
-- [License](#License)
+- [License](#License).
 
 ## Installation
 
