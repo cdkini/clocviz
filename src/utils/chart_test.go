@@ -22,24 +22,24 @@ func TestUpdate(t *testing.T) {
 			color:    RGB{55, 94, 171},
 			value:    5,
 			language: "Go",
-			want: &Directory{"root", RGB{0, 0, 0}, 1, []ChartObj{
+			want: &Directory{"root", RGB{55, 94, 171}, 5, []ChartObj{
 				&File{"main.go", RGB{55, 94, 171}, 5, "Go"}}}},
 		{
 			path:     []string{"src", "main.py"},
 			color:    RGB{53, 114, 165},
 			value:    232,
 			language: "Python",
-			want: &Directory{"root", RGB{0, 0, 0}, 1, []ChartObj{
-				&Directory{"src", RGB{53, 114, 165}, 1, []ChartObj{
+			want: &Directory{"root", RGB{53, 114, 165}, 232, []ChartObj{
+				&Directory{"src", RGB{53, 114, 165}, 232, []ChartObj{
 					&File{"main.py", RGB{53, 114, 165}, 232, "Python"}}}}}},
 		{
 			path:     []string{"src", "main", "main.c"},
 			color:    RGB{85, 85, 85},
 			value:    165,
 			language: "C",
-			want: &Directory{"root", RGB{0, 0, 0}, 1, []ChartObj{
-				&Directory{"src", RGB{85, 85, 85}, 1, []ChartObj{
-					&Directory{"main", RGB{85, 85, 85}, 1, []ChartObj{
+			want: &Directory{"root", RGB{85, 85, 85}, 165, []ChartObj{
+				&Directory{"src", RGB{85, 85, 85}, 165, []ChartObj{
+					&Directory{"main", RGB{85, 85, 85}, 165, []ChartObj{
 						&File{"main.c", RGB{85, 85, 85}, 165, "C"}}}}}}}},
 
 		// Test usage in GetLinesByLang
@@ -48,24 +48,24 @@ func TestUpdate(t *testing.T) {
 			color:    RGB{53, 114, 165},
 			value:    232,
 			language: "Python",
-			want: &Directory{"root", RGB{0, 0, 0}, 1, []ChartObj{
-				&Directory{"Python", RGB{53, 114, 165}, 1, []ChartObj{
-					&Directory{"src", RGB{53, 114, 165}, 1, []ChartObj{
+			want: &Directory{"root", RGB{53, 114, 165}, 232, []ChartObj{
+				&Directory{"Python", RGB{53, 114, 165}, 232, []ChartObj{
+					&Directory{"src", RGB{53, 114, 165}, 232, []ChartObj{
 						&File{"main.py", RGB{53, 114, 165}, 232, "Python"}}}}}}}},
 		{
 			path:     []string{"C", "src", "main", "main.c"},
 			color:    RGB{85, 85, 85},
 			value:    165,
 			language: "C",
-			want: &Directory{"root", RGB{0, 0, 0}, 1, []ChartObj{
-				&Directory{"C", RGB{85, 85, 85}, 1, []ChartObj{
-					&Directory{"src", RGB{85, 85, 85}, 1, []ChartObj{
-						&Directory{"main", RGB{85, 85, 85}, 1, []ChartObj{
+			want: &Directory{"root", RGB{85, 85, 85}, 165, []ChartObj{
+				&Directory{"C", RGB{85, 85, 85}, 165, []ChartObj{
+					&Directory{"src", RGB{85, 85, 85}, 165, []ChartObj{
+						&Directory{"main", RGB{85, 85, 85}, 165, []ChartObj{
 							&File{"main.c", RGB{85, 85, 85}, 165, "C"}}}}}}}}}},
 	}
 
 	for i, test := range table {
-		c := NewDirectory("root", RGB{0, 0, 0})
+		c := NewDirectory("root", RGB{0, 0, 0}, 0)
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
 			c.Update(test.path, test.color, test.value, test.language)
@@ -95,9 +95,9 @@ func TestPersistentUpdate(t *testing.T) {
 				{[]string{"src", "main", "a.py"}, RGB{55, 94, 171}, 10, "Python"},
 				{[]string{"src", "main", "b.py"}, RGB{55, 94, 171}, 20, "Python"},
 				{[]string{"src", "main", "c.py"}, RGB{55, 94, 171}, 30, "Python"}},
-			want: &Directory{"root", RGB{0, 0, 0}, 3, []ChartObj{
-				&Directory{"src", RGB{55, 94, 171}, 3, []ChartObj{
-					&Directory{"main", RGB{55, 94, 171}, 3, []ChartObj{
+			want: &Directory{"root", RGB{55, 94, 171}, 60, []ChartObj{
+				&Directory{"src", RGB{55, 94, 171}, 60, []ChartObj{
+					&Directory{"main", RGB{55, 94, 171}, 60, []ChartObj{
 						&File{"a.py", RGB{55, 94, 171}, 10, "Python"},
 						&File{"b.py", RGB{55, 94, 171}, 20, "Python"},
 						&File{"c.py", RGB{55, 94, 171}, 30, "Python"}}}}}}}},
@@ -106,13 +106,13 @@ func TestPersistentUpdate(t *testing.T) {
 				{[]string{"src", "dirA", "a.py"}, RGB{55, 94, 171}, 10, "Python"},
 				{[]string{"src", "dirB", "b.py"}, RGB{55, 94, 171}, 20, "Python"},
 				{[]string{"src", "dirC", "c.py"}, RGB{55, 94, 171}, 30, "Python"}},
-			want: &Directory{"root", RGB{0, 0, 0}, 3, []ChartObj{
-				&Directory{"src", RGB{55, 94, 171}, 3, []ChartObj{
-					&Directory{"dirA", RGB{55, 94, 171}, 1, []ChartObj{
+			want: &Directory{"root", RGB{55, 94, 171}, 60, []ChartObj{
+				&Directory{"src", RGB{55, 94, 171}, 60, []ChartObj{
+					&Directory{"dirA", RGB{55, 94, 171}, 10, []ChartObj{
 						&File{"a.py", RGB{55, 94, 171}, 10, "Python"}}},
-					&Directory{"dirB", RGB{55, 94, 171}, 1, []ChartObj{
+					&Directory{"dirB", RGB{55, 94, 171}, 20, []ChartObj{
 						&File{"b.py", RGB{55, 94, 171}, 20, "Python"}}},
-					&Directory{"dirC", RGB{55, 94, 171}, 1, []ChartObj{
+					&Directory{"dirC", RGB{55, 94, 171}, 30, []ChartObj{
 						&File{"c.py", RGB{55, 94, 171}, 30, "Python"}}}}}}}},
 
 		// Test usage in GetLinesByLang
@@ -121,10 +121,10 @@ func TestPersistentUpdate(t *testing.T) {
 				{[]string{"Python", "src", "main", "a.py"}, RGB{55, 94, 171}, 10, "Python"},
 				{[]string{"Python", "src", "main", "b.py"}, RGB{55, 94, 171}, 20, "Python"},
 				{[]string{"Python", "src", "main", "c.py"}, RGB{55, 94, 171}, 30, "Python"}},
-			want: &Directory{"root", RGB{0, 0, 0}, 3, []ChartObj{
-				&Directory{"Python", RGB{55, 94, 171}, 3, []ChartObj{
-					&Directory{"src", RGB{55, 94, 171}, 3, []ChartObj{
-						&Directory{"main", RGB{55, 94, 171}, 3, []ChartObj{
+			want: &Directory{"root", RGB{55, 94, 171}, 60, []ChartObj{
+				&Directory{"Python", RGB{55, 94, 171}, 60, []ChartObj{
+					&Directory{"src", RGB{55, 94, 171}, 60, []ChartObj{
+						&Directory{"main", RGB{55, 94, 171}, 60, []ChartObj{
 							&File{"a.py", RGB{55, 94, 171}, 10, "Python"},
 							&File{"b.py", RGB{55, 94, 171}, 20, "Python"},
 							&File{"c.py", RGB{55, 94, 171}, 30, "Python"}}}}}}}}}},
@@ -133,19 +133,19 @@ func TestPersistentUpdate(t *testing.T) {
 				{[]string{"Python", "src", "dirA", "a.py"}, RGB{55, 94, 171}, 10, "Python"},
 				{[]string{"Python", "src", "dirB", "b.py"}, RGB{55, 94, 171}, 20, "Python"},
 				{[]string{"Python", "src", "dirC", "c.py"}, RGB{55, 94, 171}, 30, "Python"}},
-			want: &Directory{"root", RGB{0, 0, 0}, 3, []ChartObj{
-				&Directory{"Python", RGB{55, 94, 171}, 3, []ChartObj{
-					&Directory{"src", RGB{55, 94, 171}, 3, []ChartObj{
-						&Directory{"dirA", RGB{55, 94, 171}, 1, []ChartObj{
+			want: &Directory{"root", RGB{55, 94, 171}, 60, []ChartObj{
+				&Directory{"Python", RGB{55, 94, 171}, 60, []ChartObj{
+					&Directory{"src", RGB{55, 94, 171}, 60, []ChartObj{
+						&Directory{"dirA", RGB{55, 94, 171}, 10, []ChartObj{
 							&File{"a.py", RGB{55, 94, 171}, 10, "Python"}}},
-						&Directory{"dirB", RGB{55, 94, 171}, 1, []ChartObj{
+						&Directory{"dirB", RGB{55, 94, 171}, 20, []ChartObj{
 							&File{"b.py", RGB{55, 94, 171}, 20, "Python"}}},
-						&Directory{"dirC", RGB{55, 94, 171}, 1, []ChartObj{
+						&Directory{"dirC", RGB{55, 94, 171}, 30, []ChartObj{
 							&File{"c.py", RGB{55, 94, 171}, 30, "Python"}}}}}}}}}},
 	}
 
 	for i, test := range table {
-		c := NewDirectory("root", RGB{0, 0, 0})
+		c := NewDirectory("root", RGB{0, 0, 0}, 0)
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
 			for _, input := range test.inputs {

@@ -32,10 +32,10 @@ func (r *RGB) Gradate(ratio float32) {
 	r.Blue = min(int(float32(r.Blue)*ratio), 255)
 }
 
-func (r *RGB) AverageColor(color RGB, count int) {
-	r.Red = (r.Red*count + color.Red*1) / (count + 1)
-	r.Green = (r.Green*count + color.Green*1) / (count + 1)
-	r.Blue = (r.Blue*count + color.Blue*1) / (count + 1)
+func AverageRGB(color1 *RGB, weight1 int, color2 *RGB, weight2 int) {
+	color1.Red = (color1.Red*weight1 + color2.Red*weight2) / (weight1 + weight2)
+	color1.Green = (color1.Green*weight1 + color2.Green*weight2) / (weight1 + weight2)
+	color1.Blue = (color1.Blue*weight1 + color2.Blue*weight2) / (weight1 + weight2)
 }
 
 func GetLangColor(lang string) RGB {

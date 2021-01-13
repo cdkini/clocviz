@@ -58,26 +58,47 @@ func TestGradate(t *testing.T) {
 	}
 }
 
-func TestAverageColor(t *testing.T) {
+func TestAverageRGB(t *testing.T) {
 	table := []struct {
-		in    RGB
-		color RGB
-		count int
+		color1  *RGB
+		weight1 int
+		color2  *RGB
+		weight2 int
 
-		want RGB
+		want *RGB
 	}{
-		{in: RGB{100, 100, 100}, color: RGB{100, 100, 100}, count: 0, want: RGB{100, 100, 100}},
-		{in: RGB{100, 100, 100}, color: RGB{100, 100, 100}, count: 3, want: RGB{100, 100, 100}},
-		{in: RGB{255, 255, 255}, color: RGB{100, 100, 100}, count: 3, want: RGB{216, 216, 216}},
-		{in: RGB{160, 0, 0}, color: RGB{140, 150, 150}, count: 1, want: RGB{150, 75, 75}},
+		{
+			color1:  &RGB{100, 100, 100},
+			weight1: 100,
+			color2:  &RGB{100, 100, 100},
+			weight2: 100,
+			want:    &RGB{100, 100, 100}},
+		{
+			color1:  &RGB{200, 200, 200},
+			weight1: 100,
+			color2:  &RGB{100, 100, 100},
+			weight2: 0,
+			want:    &RGB{200, 200, 200}},
+		{
+			color1:  &RGB{0, 0, 0},
+			weight1: 0,
+			color2:  &RGB{100, 100, 100},
+			weight2: 200,
+			want:    &RGB{100, 100, 100}},
+		{
+			color1:  &RGB{50, 100, 150},
+			weight1: 100,
+			color2:  &RGB{100, 100, 100},
+			weight2: 200,
+			want:    &RGB{83, 100, 116}},
 	}
 
 	for i, test := range table {
 		name := fmt.Sprintf("Test %d - GetLangColor", i+1)
 		t.Run(name, func(t *testing.T) {
-			test.in.AverageColor(test.color, test.count)
-			if !cmp.Equal(test.in, test.want) {
-				t.Errorf("%s: %s", name, cmp.Diff(test.in, test.want))
+			AverageRGB(test.color1, test.weight1, test.color2, test.weight2)
+			if !cmp.Equal(test.color1, test.want) {
+				t.Errorf("%s: %s", name, cmp.Diff(test.color1, test.want))
 			}
 		})
 	}
