@@ -1,20 +1,23 @@
-body {
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    grid-template-areas:
-        "header header"
-        "main aside";
-    margin: 0;
-    padding: 0;
-}
-
 header {
-    background: black;
+    background: #3c4c6c;
     color: white;
     grid-area: header;
     padding: 1em;
-    font-size: 2em;
+    font-size: 2.5em;
 }
+
+body {
+    display: grid;
+    grid-template-columns: .5fr 1fr 2fr 1fr .5fr;
+    grid-template-areas:
+        "header header header header header"
+        ". . main aside .";
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+}
+
+
 
 aside {
     grid-area: aside;
@@ -43,4 +46,9 @@ main {
   clear: both;
 }
 
-
+.card {
+    padding: .5em;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    background: #ffffff;
+    border-radius: 5px;
+}
