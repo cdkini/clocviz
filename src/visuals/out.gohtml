@@ -10,12 +10,19 @@
     <h1>{{.Title}}</h1>
     <div id="chart"></div>
     <script>
-      const data = {{.Data}}
+      const data1 = {{.ByLang}}
       Sunburst()
         .size("size")
         .excludeRoot(true)
         .showLabels(false)
-        .data(data)
+        .data(data1)
+        .color("color")(document.getElementById("chart"));
+      const data2 = {{.ByFile}}
+      Sunburst()
+        .size("size")
+        .excludeRoot(true)
+        .showLabels(false)
+        .data(data2)
         .color("color")(document.getElementById("chart"));
     </script>
   </body>

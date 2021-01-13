@@ -10,19 +10,21 @@ import (
 )
 
 type Content struct {
-	Title string
-	Data  *utils.Directory
+	Title  string
+	ByLang *utils.Directory
+	ByFile *utils.Directory
 }
 
-func GenerateHTML(title string, root *utils.Directory) {
+func GenerateHTML(title string, byLang *utils.Directory, byFile *utils.Directory) {
 	t, err := template.ParseFiles("src/visuals/out.gohtml")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	content := Content{
-		Title: title,
-		Data:  root,
+		Title:  title,
+		ByLang: byLang,
+		ByFile: byFile,
 	}
 
 	f, err := os.Create("out.html")

@@ -9,24 +9,24 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 2 {
+	if len(os.Args) != 2 {
 		log.Fatal("clocviz: Usage 'clocviz [src] [optional: git hash/branch]'")
 	}
 
+	// Run cloc to generate file system and related stats
 	in := os.Args[1]
-	var gitObj string
-	if len(os.Args) == 3 {
-		gitObj = os.Args[2]
-	}
-
-	raw, err := utils.RunCloc(in, gitObj)
+	raw, err := utils.RunCloc(in)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	clean := utils.ParseResults(raw)
-	data := utils.GetLinesByLang(clean)
-	visuals.GenerateHTML("Test", data)
+	// Parse data and separate into two JSON objects
+	data := utils.ParseResults(raw)
+	byLang := utils.GetLinesByLang(data)
+	byLine := utils.GetLinesByFile(data)
+
+	// Feed data into HTML/CSS/JS and render to browser
+	visuals.GenerateHTML("Test", byLang, byLine)
 	utils.OpenBrowser("out.html")
 
 	os.Exit(0)
