@@ -1,0 +1,1 @@
+document.getElementById('legend').innerHTML += 'Hi';

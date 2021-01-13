@@ -1,0 +1,46 @@
+body {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-areas:
+        "header header"
+        "main aside";
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: black;
+    color: white;
+    grid-area: header;
+    padding: 1em;
+    font-size: 2em;
+}
+
+aside {
+    grid-area: aside;
+    padding: 1em;
+}
+
+main {
+    padding-left: 2em;
+    grid-area: main;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+#legend {
+    list-style-type: none;
+}
+
+#legend li div{
+  float: left;
+  height: 1em;
+  width: 1em;
+  border: 1px solid black;
+  clear: both;
+}
+
+
