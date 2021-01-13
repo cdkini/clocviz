@@ -34,7 +34,7 @@ func runClocOnLocalDir(in string) (string, error) {
 func runClocOnGitRepo(in string) (string, error) {
 	repo := fmt.Sprintf("git://github.com/%s.git", in)
 
-	clone := exec.Command("git", "clone", repo)
+	clone := exec.Command("git", "clone", "--depth", "1", repo)
 	if _, err := clone.Output(); err != nil {
 		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Could not find git repo '%s'", in))
 	}
