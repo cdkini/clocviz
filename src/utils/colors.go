@@ -26,10 +26,16 @@ func (r RGB) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.String())
 }
 
-func (r RGB) Gradate(percentage float32) {
-	r.Red = int(float32(r.Red) * percentage)
-	r.Green = int(float32(r.Green) * percentage)
-	r.Blue = int(float32(r.Blue) * percentage)
+func (r *RGB) Gradate(ratio float32) {
+	r.Red = min(int(float32(r.Red)*ratio), 255)
+	r.Green = min(int(float32(r.Green)*ratio), 255)
+	r.Blue = min(int(float32(r.Blue)*ratio), 255)
+}
+
+func (r *RGB) AverageColor(color RGB, count int) {
+	r.Red = (r.Red*count + color.Red*1) / (count + 1)
+	r.Green = (r.Green*count + color.Green*1) / (count + 1)
+	r.Blue = (r.Blue*count + color.Blue*1) / (count + 1)
 }
 
 func GetLangColor(lang string) RGB {

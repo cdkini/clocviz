@@ -40,3 +40,10 @@ func isInSlice(target string, slice []ChartObj) (bool, ChartObj) {
 	}
 	return false, nil
 }
+
+func min(a int, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
