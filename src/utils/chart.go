@@ -102,6 +102,7 @@ func GetLinesByFile(data [][]string) *Directory {
 		root.Update(path, color, size, lang)
 	}
 
+	root.Size = 0
 	return root
 }
 
@@ -123,5 +124,6 @@ func GetLinesByLang(data [][]string) *Directory {
 		root.Update(path, color, size, lang)
 	}
 
+	root.Size = 0
 	return root
 }

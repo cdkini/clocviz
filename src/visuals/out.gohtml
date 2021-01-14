@@ -4,26 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://unpkg.com/sunburst-chart"></script>
+    <link rel="stylesheet" href="src/visuals/styles.css" />
     <title>clocviz</title>
   </head>
+
   <body>
-    <h1>{{.Title}}</h1>
-    <div id="chart"></div>
-    <script>
-      const data1 = {{.ByLang}}
-      Sunburst()
-        .size("size")
-        .excludeRoot(true)
-        .showLabels(false)
-        .data(data1)
-        .color("color")(document.getElementById("chart"));
-      const data2 = {{.ByFile}}
-      Sunburst()
-        .size("size")
-        .excludeRoot(true)
-        .showLabels(false)
-        .data(data2)
-        .color("color")(document.getElementById("chart"));
-    </script>
+    <header>clocviz</header>
+
+    <main>
+      <div class="card">
+        <h1>Test1</h1>
+        <div class="container">
+          <div id="chart">
+            <script>
+              function testFunc() {
+                console.log("Hi");
+              }
+              const data = {{.ByLang}}
+              const myChart = Sunburst()
+                .width(800) /* Make chart size occupy % of width */
+                .height(1000)
+                .size("size")
+                .excludeRoot(true)
+                .showLabels(true)
+                .data(data)
+                .onClick((node) => {
+                  myChart.focusOnNode(node);
+                  console.log(node);
+                })
+                .color("color")(document.getElementById("chart"));
+            </script>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="right">
+      <div class="card">
+        <h2>Legend</h2>
+        <ul id="legend"></ul>
+      </div>
+    </div>
+
+    <div id="left">
+      <div class="card">
+        <h2>Stats</h2>
+        test
+      </div>
+    </div>
   </body>
+
+  <script src="src/visuals/script.js"></script>
 </html>
