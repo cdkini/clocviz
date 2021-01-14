@@ -68,7 +68,7 @@ func TestUpdate(t *testing.T) {
 		c := NewDirectory("root", RGB{0, 0, 0}, 0)
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
-			c.Update(test.path, test.color, test.value, test.language)
+			c.update(test.path, test.color, test.value, test.language)
 			if !cmp.Equal(c, test.want) {
 				t.Errorf("%s: %s", name, cmp.Diff(c, test.want))
 			}
@@ -76,6 +76,7 @@ func TestUpdate(t *testing.T) {
 	}
 }
 
+// Same as TestUpdate but aggregates multiple queries into individual tests to determine persistence.
 func TestPersistentUpdate(t *testing.T) {
 	type MockInput struct {
 		path     []string
@@ -149,7 +150,7 @@ func TestPersistentUpdate(t *testing.T) {
 		name := fmt.Sprintf("Test %d - Update", i+1)
 		t.Run(name, func(t *testing.T) {
 			for _, input := range test.inputs {
-				c.Update(input.path, input.color, input.value, input.language)
+				c.update(input.path, input.color, input.value, input.language)
 			}
 			if !cmp.Equal(c, test.want) {
 				t.Errorf("%s: %s", name, cmp.Diff(c, test.want))

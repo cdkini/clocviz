@@ -24,10 +24,11 @@ func main() {
 	// Parse data and separate into two JSON objects
 	data := utils.ParseResults(raw)
 	byLang := utils.GetLinesByLang(data)
-	byLine := utils.GetLinesByFile(data)
+	byFile := utils.GetLinesByFile(data)
 
 	// Feed data into HTML/CSS/JS and render to browser
-	visuals.GenerateHTML("Test", byLang, byLine)
+	content := visuals.NewContent("Test", byLang, byFile)
+	visuals.GenerateHTML(content)
 	utils.OpenBrowser("out.html")
 
 	os.Exit(0)

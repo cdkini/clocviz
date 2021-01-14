@@ -2,13 +2,9 @@ package utils
 
 import (
 	"fmt"
-	// "log"
 	"os"
 	"strings"
 	"testing"
-
-	// "io/ioutil"
-	// "path/filepath"
 
 	"github.com/pkg/errors"
 )

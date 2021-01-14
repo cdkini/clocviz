@@ -8,6 +8,7 @@ import (
 	"math/rand"
 )
 
+// RGB is a simple wrapper around RGB integers
 type RGB struct {
 	Red   int
 	Green int
@@ -22,28 +23,29 @@ func (r RGB) String() string {
 	return fmt.Sprintf("rgb(%v,%v,%v)", r.Red, r.Green, r.Blue)
 }
 
+// Necessary to display RGB as "rgb(r,g,b)" in JSON.
 func (r RGB) MarshalJSON() ([]byte, error) {
 	return json.Marshal(r.String())
 }
 
-func (r *RGB) Gradate(ratio float32) {
+// gradate darkens or lightens a given RGB by a given factor or ratio.
+func (r *RGB) gradate(ratio float32) {
 	r.Red = min(int(float32(r.Red)*ratio), 255)
 	r.Green = min(int(float32(r.Green)*ratio), 255)
 	r.Blue = min(int(float32(r.Blue)*ratio), 255)
 }
 
-func AverageRGB(color1 *RGB, weight1 int, color2 *RGB, weight2 int) {
+func averageRGB(color1 *RGB, weight1 int, color2 *RGB, weight2 int) {
 	color1.Red = (color1.Red*weight1 + color2.Red*weight2) / (weight1 + weight2)
 	color1.Green = (color1.Green*weight1 + color2.Green*weight2) / (weight1 + weight2)
 	color1.Blue = (color1.Blue*weight1 + color2.Blue*weight2) / (weight1 + weight2)
 }
 
-func GetLangColor(lang string) RGB {
+func getLangColor(lang string) RGB {
 	if color, ok := COLORS[lang]; ok {
 		return color
 	}
-	// If color is not in COLORS, we save a random color for future usage.
-	rand := getRandomColor()
+	rand := getRandomColor() // If color is not in COLORS, we save a random color for future usage
 	COLORS[lang] = rand
 	return rand
 }
@@ -56,7 +58,7 @@ func getRandomColor() RGB {
 	return NewRGB(red, green, blue)
 }
 
-// Associations between language name and official color
+// Associations between language name and official color.
 // Source: https://github.com/doda/github-language-colors/blob/master/colors.json
 var COLORS = map[string]RGB{
 	"ABAP":                  NewRGB(232, 39, 75),

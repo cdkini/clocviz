@@ -7,7 +7,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestValidGetLangColor(t *testing.T) {
+func TestGetLangColor(t *testing.T) {
 	table := []struct {
 		in   string
 		want RGB
@@ -24,7 +24,7 @@ func TestValidGetLangColor(t *testing.T) {
 	for i, test := range table {
 		name := fmt.Sprintf("Test %d - GetLangColor", i+1)
 		t.Run(name, func(t *testing.T) {
-			out := GetLangColor(test.in)
+			out := getLangColor(test.in)
 			if out != test.want {
 				t.Errorf("%s: Expected %v, received %v (Lang: %s)", name, test.want, out, test.in)
 			}
@@ -48,9 +48,9 @@ func TestGradate(t *testing.T) {
 	}
 
 	for i, test := range table {
-		name := fmt.Sprintf("Test %d - GetLangColor", i+1)
+		name := fmt.Sprintf("Test %d - Gradate", i+1)
 		t.Run(name, func(t *testing.T) {
-			test.in.Gradate(test.ratio)
+			test.in.gradate(test.ratio)
 			if !cmp.Equal(test.in, test.want) {
 				t.Errorf("%s: %s", name, cmp.Diff(test.in, test.want))
 			}
@@ -94,9 +94,9 @@ func TestAverageRGB(t *testing.T) {
 	}
 
 	for i, test := range table {
-		name := fmt.Sprintf("Test %d - GetLangColor", i+1)
+		name := fmt.Sprintf("Test %d - AverageRGB", i+1)
 		t.Run(name, func(t *testing.T) {
-			AverageRGB(test.color1, test.weight1, test.color2, test.weight2)
+			averageRGB(test.color1, test.weight1, test.color2, test.weight2)
 			if !cmp.Equal(test.color1, test.want) {
 				t.Errorf("%s: %s", name, cmp.Diff(test.color1, test.want))
 			}

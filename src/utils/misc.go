@@ -7,24 +7,23 @@ import (
 	"runtime"
 )
 
-func OpenBrowser(url string) {
+// OpenBrowser determines the user's OS and opens an output file with the appropriate command.
+func OpenBrowser(path string) {
 	var err error
 
 	switch runtime.GOOS {
 	case "linux":
-		fmt.Println("Linux")
-		err = exec.Command("xdg-open", url).Start()
+		err = exec.Command("xdg-open", path).Start()
 	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
+		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", path).Start()
 	case "darwin":
-		err = exec.Command("open", url).Start()
+		err = exec.Command("open", path).Start()
 	default:
 		err = fmt.Errorf("clocviz: Script run on unsupported platform")
 	}
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Err:", err)
 }
 
 func isInSlice(target string, slice []ChartObj) (bool, ChartObj) {

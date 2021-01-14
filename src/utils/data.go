@@ -10,8 +10,21 @@ import (
 	"github.com/pkg/errors"
 )
 
-// RunCloc runs the 'cloc' tool on a target dir and writes STDOUT as a string.
-// Takes an optional git hash or branch; defaults to HEAD state if not provided.
+// ParseResults evaluates the cloc output string and converts it an easier-to-use format.
+// Unnecessary rows are deleted and the result is saved as a [][]string.
+func ParseResults(data string) [][]string {
+	var out [][]string
+	rows := strings.Split(data, "\n")
+	for i := 0; i < len(rows); i++ {
+		row := strings.Split(rows[i], ",")
+		if len(row) == 5 && row[0] != "SUM" {
+			out = append(out, row)
+		}
+	}
+	return out
+}
+
+// RunCloc runs the cloc tool on a local directory or remote Git repository and writes STDOUT as a string.
 func RunCloc(in string) (string, error) {
 	if _, err := os.Stat(in); os.IsNotExist(err) {
 		return runClocOnGitRepo(in)
@@ -34,7 +47,7 @@ func runClocOnLocalDir(in string) (string, error) {
 func runClocOnGitRepo(in string) (string, error) {
 	repo := fmt.Sprintf("git://github.com/%s.git", in)
 
-	clone := exec.Command("git", "clone", "--depth", "1", repo)
+	clone := exec.Command("git", "clone", "--depth", "1", repo) // Set depth to improve performance
 	if _, err := clone.Output(); err != nil {
 		return "", errors.Wrap(err, fmt.Sprintf("clocviz: Could not find git repo '%s'", in))
 	}
@@ -45,18 +58,4 @@ func runClocOnGitRepo(in string) (string, error) {
 	}()
 
 	return runClocOnLocalDir(dir)
-}
-
-// ParseResults evaluates the cloc output string and converts it an easier-to-use format.
-// Unnecessary rows are deleted and the result is saved as a [][]string.
-func ParseResults(data string) [][]string {
-	var out [][]string
-	rows := strings.Split(data, "\n")
-	for i := 0; i < len(rows); i++ {
-		row := strings.Split(rows[i], ",")
-		if len(row) == 5 && row[0] != "SUM" {
-			out = append(out, row)
-		}
-	}
-	return out
 }
