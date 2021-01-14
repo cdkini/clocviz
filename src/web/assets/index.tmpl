@@ -17,9 +17,6 @@
         <div class="container">
           <div id="chart">
             <script>
-              function testFunc() {
-                console.log("Hi");
-              }
               const data = {{.ByLang}}
               const myChart = Sunburst()
                 .width(800) /* Make chart size occupy % of width */
@@ -30,7 +27,7 @@
                 .data(data)
                 .onClick((node) => {
                   myChart.focusOnNode(node);
-                  console.log(node);
+                                wrapper("statsList", node);
                 })
                 .color("color")(document.getElementById("chart"));
             </script>
@@ -45,13 +42,14 @@
         <ul id="legend"></ul>
       </div>
     </div>
-
     <div id="left">
       <div class="card">
         <h2>Stats</h2>
-        test
+        <ul id="statsList"></ul>
       </div>
     </div>
+
+
   </body>
 
   <script src="src/web/assets/script.js"></script>
