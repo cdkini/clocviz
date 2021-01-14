@@ -19,28 +19,42 @@
       <div class="container">
         <div id="chart">
           <script>
+            function testFunc() {
+                console.log("Hi");
+            }
             const data = {"name":"root","color":"#000000","children":[{"name":"Go","color":"#375eab","children":[{"name":"src","color":"#375eab","children":[{"name":"utils","color":"#375eab","children":[{"name":"colors.go","color":"#375eab","size":251,"language":"Go"},{"name":"chart_test.go","color":"#375eab","size":144,"language":"Go"},{"name":"chart.go","color":"#375eab","size":83,"language":"Go"},{"name":"data.go","color":"#375eab","size":51,"language":"Go"},{"name":"colors_test.go","color":"#375eab","size":51,"language":"Go"},{"name":"data_test.go","color":"#375eab","size":50,"language":"Go"},{"name":"misc.go","color":"#375eab","size":38,"language":"Go"}]},{"name":"visuals","color":"#375eab","children":[{"name":"templates.go","color":"#375eab","size":29,"language":"Go"}]}]},{"name":"main.go","color":"#375eab","size":26,"language":"Go"}]},{"name":"HTML","color":"#e44b23","children":[{"name":"out.html","color":"#e44b23","size":22,"language":"HTML"}]},{"name":"Markdown","color":"#45eb3a","children":[{"name":"README.md","color":"#45eb3a","size":14,"language":"Markdown"}]}]}
-            Sunburst()
-    .width(800)  /* Make chart size occupy % of width */
-    .height(1000)
-    .size("size")
-    .excludeRoot(true)
-    .showLabels(true)
-    .data(data)
-    .color("color")(document.getElementById("chart"));
+            const myChart = Sunburst()
+                  .width(800)  /* Make chart size occupy % of width */
+                  .height(1000)
+                  .size("size")
+                  .excludeRoot(true)
+                  .showLabels(true)
+                  .data(data)
+                  /*.onClick(() => {
+                      console.log("Hi");
+                      
+                      myChart.focusOnNode();})*/
+                  .color("color")(document.getElementById("chart"));
           </script>
         </div>
       </div>
       </div>
     </main>
 
-    <aside>
+    <div id="right">
       <div class="card">
       <h2>Legend</h2>
       <ul id="legend">
       </ul>
       </div>
-    </aside>
+    </div>
+
+    <div id="left">
+      <div class="card">
+        <h2>Stats</h2>
+        test
+      </div>
+    </div>
   </body>
 
   <script src="script.js"></script>
