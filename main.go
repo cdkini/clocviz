@@ -1,3 +1,4 @@
+// Package main deals with the CLI interface and overall program control flow.
 package main
 
 import (
