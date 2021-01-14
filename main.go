@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/cdkini/clocviz/src/utils"
-	"github.com/cdkini/clocviz/src/visuals"
+	"github.com/cdkini/clocviz/src/web"
 )
 
 func main() {
@@ -27,8 +27,8 @@ func main() {
 	byFile := utils.GetLinesByFile(data)
 
 	// Feed data into HTML/CSS/JS and render to browser
-	content := visuals.NewContent("Test", byLang, byFile)
-	visuals.GenerateHTML(content)
+	content := web.NewContent("Test", byLang, byFile)
+	web.GenerateHTML(content)
 	utils.OpenBrowser("out.html")
 
 	os.Exit(0)

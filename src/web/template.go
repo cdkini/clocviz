@@ -1,4 +1,4 @@
-package visuals
+package web
 
 import (
 	"log"
@@ -22,7 +22,7 @@ func NewContent(title string, rootByLang *utils.Directory, rootByFile *utils.Dir
 
 // GenerateHTML takes in a Content object, provides the stored data to a template, and renders an output file.
 func GenerateHTML(content Content) {
-	t, err := template.ParseFiles("src/visuals/out.gohtml")
+	t, err := template.ParseFiles("src/web/assets/index.tmpl")
 	if err != nil {
 		log.Fatal(err)
 	}
