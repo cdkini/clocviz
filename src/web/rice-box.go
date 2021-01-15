@@ -12,19 +12,19 @@ func init() {
 	// define files
 	file2 := &embedded.EmbeddedFile{
 		Filename:    "index.tmpl",
-		FileModTime: time.Unix(1610681718, 0),
+		FileModTime: time.Unix(1610724190, 0),
 
-		Content: string("<!DOCTYPE html>\n<html lang=\"en\">\n  \n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <script src=\"https://unpkg.com/sunburst-chart\"></script>\n    <link rel=\"stylesheet\" href=\"src/static/styles.css\">\n    <title>clocviz</title>\n  </head>\n  \n  <body>\n    <header>clocviz</header>\n\n    \n    <main>\n      <div class=\"card\">\n      <h1>Chart</h1>\n      <div class=\"container\">\n        <div id=\"chart\">\n          <script>\n            function testFunc() {\n                console.log(\"Hi\");\n            }\n            const data = {{.ByLang}}\n            const myChart = Sunburst()\n                  .width(800)  /* Make chart size occupy % of width */\n                  .height(1000)\n                  .size(\"size\")\n                  .excludeRoot(true)\n                  .showLabels(true)\n                  .data(data)\n                  .onClick((node) => {\n                      myChart.focusOnNode(node);\n                      wrapper(\"statsList\", node);\n                  })\n                  .color(\"color\")(document.getElementById(\"chart\"));\n          </script>\n        </div>\n      </div>\n      </div>\n    </main>\n\n    <div id=\"right\">\n      <div class=\"card\">\n      <h2>Legend</h2>\n      <ul id=\"legend\">\n      </ul>\n      </div>\n    </div>\n\n    <div id=\"left\">\n      <div class=\"card\">\n        <h2>File structure\n          <div style=\"display: float; float: right\">Lines of code</div>\n        </h2>\n        <ul id=\"statsList\"></ul>\n      </div>\n    </div>\n  </body>\n\n  <script src=\"src/static/script.js\"></script>\n</html>\n"),
+		Content: string("<!DOCTYPE html>\n<html lang=\"en\">\n  \n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <script src=\"https://unpkg.com/sunburst-chart\"></script>\n    <link rel=\"stylesheet\" href=\"/src/static/styles.css\">\n    <title>clocviz</title>\n  </head>\n  \n  <body>\n    <header>clocviz</header>\n\n    \n    <main>\n      <div class=\"card\">\n      <h1>Chart</h1>\n      <div class=\"container\">\n        <div id=\"chart\">\n          <script>\n            function testFunc() {\n                console.log(\"Hi\");\n            }\n            const data = {{.ByLang}}\n            const myChart = Sunburst()\n                  .width(800)  /* Make chart size occupy % of width */\n                  .height(1000)\n                  .size(\"size\")\n                  .excludeRoot(true)\n                  .showLabels(true)\n                  .data(data)\n                  .onClick((node) => {\n                      myChart.focusOnNode(node);\n                      wrapper(\"statsList\", node);\n                  })\n                  .color(\"color\")(document.getElementById(\"chart\"));\n          </script>\n        </div>\n      </div>\n      </div>\n    </main>\n\n    <div id=\"right\">\n      <div class=\"card\">\n      <h2>Legend</h2>\n      <ul id=\"legend\">\n      </ul>\n      </div>\n    </div>\n\n    <div id=\"left\">\n      <div class=\"card\">\n        <h2>File structure\n          <div style=\"display: float; float: right\">Lines of code</div>\n        </h2>\n        <ul id=\"statsList\"></ul>\n      </div>\n    </div>\n  </body>\n\n  <script src=\"/src/static/script.js\"></script>\n</html>\n"),
 	}
 	file3 := &embedded.EmbeddedFile{
 		Filename:    "script.js",
-		FileModTime: time.Unix(1610672951, 0),
+		FileModTime: time.Unix(1610683365, 0),
 
 		Content: string("/* Inject CSS: https://stackoverflow.com/questions/15505225/inject-css-stylesheet-as-string-using-javascript */\nfunction addStyle(styleString) {\n  const style = document.createElement(\"style\");\n  style.textContent = styleString;\n  document.head.append(style);\n}\n\nconst languages = data.children.map((child) => child.name);\n\nlanguages.forEach(\n  (language) =>\n    (document.getElementById(\n      \"legend\"\n    ).innerHTML += `<li><div class=\"box ${language}\"></div>  ${language}</li>`)\n);\n\ndata.children.forEach((child) =>\n  addStyle(`\n  .box.${child.name} {\n    background: ${child.color};\n  }\n  `)\n);\n\nfunction wrapper(id, node) {\n  clear(id);\n  populateStats(node);\n}\n\nfunction clear(id) {\n  document.getElementById(id).innerHTML = \"\";\n}\n\nfunction populateStats(node, parent = \"statsList\") {\n  if (!node.hasOwnProperty(\"children\")) {\n    document.getElementById(parent).innerHTML += `<li>${node.name} \n<div style=\"display: float; float: right; padding-right: 2em; color: ${node.color}; font-weight: bold\">${node.size}</div></li>`;\n    console.log(node.name, node.size);\n  } else {\n    let nestedId = `li_${node.name}`;\n    document.getElementById(parent).innerHTML += `\n<li>/<b>${node.name}</b></li>\n  <ul id=${nestedId}>\n`;\n    node.children.map((node) => populateStats(node, nestedId));\n    document.getElementById(parent).innerHTML += `</ul>`;\n  }\n}\n\nwrapper(\"statsList\", data);\n"),
 	}
 	file4 := &embedded.EmbeddedFile{
 		Filename:    "styles.css",
-		FileModTime: time.Unix(1610672014, 0),
+		FileModTime: time.Unix(1610683365, 0),
 
 		Content: string("header {\n  background: #3c4c6c;\n  color: white;\n  grid-area: header;\n  padding: 1em;\n  font-size: 2.2em;\n}\n\nbody {\n  display: grid;\n  grid-template-columns: 0.5fr 1fr 2fr 1fr 0.5fr;\n  grid-template-areas:\n    \"header header header header header\"\n    \". left main right .\";\n  margin: 0;\n  padding: 0;\n  background: #f4f4f4;\n  grid-gap: 2em;\n}\n\n.card {\n  padding: 0.8em;\n  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);\n  background: #ffffff;\n  border-radius: 5px;\n}\n\nmain {\n  padding-left: 2em;\n  grid-area: main;\n}\n\n.container {\n  display: flex;\n  justify-content: center;\n}\n\n#legend {\n  list-style-type: none;\n}\n\n#legend li div {\n  float: left;\n  height: 1em;\n  width: 1em;\n  border: 1px solid black;\n  margin-right: 0.5em;\n}\n\n#right {\n  grid-area: right;\n}\n\n#left {\n  grid-area: left;\n}\n\nul {\n  font-size: 1.5rem;\n}\n\n#left ul {\n  list-style: none;\n  padding-left: 1em;\n}\n"),
 	}
@@ -32,7 +32,7 @@ func init() {
 	// define dirs
 	dir1 := &embedded.EmbeddedDir{
 		Filename:   "",
-		DirModTime: time.Unix(1610674209, 0),
+		DirModTime: time.Unix(1610683365, 0),
 		ChildFiles: []*embedded.EmbeddedFile{
 			file2, // "index.tmpl"
 			file3, // "script.js"
@@ -47,7 +47,7 @@ func init() {
 	// register embeddedBox
 	embedded.RegisterEmbeddedBox(`../static`, &embedded.EmbeddedBox{
 		Name: `../static`,
-		Time: time.Unix(1610674209, 0),
+		Time: time.Unix(1610683365, 0),
 		Dirs: map[string]*embedded.EmbeddedDir{
 			"": dir1,
 		},
