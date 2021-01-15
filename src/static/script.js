@@ -11,7 +11,7 @@ languages.forEach(
   (language) =>
     (document.getElementById(
       "legend"
-    ).innerHTML += `<li><div class="box ${language}"></div>${language}</li>`)
+    ).innerHTML += `<li><div class="box ${language}"></div>  ${language}</li>`)
 );
 
 data.children.forEach((child) =>
@@ -32,7 +32,7 @@ function clear(id) {
 }
 
 function populateStats(node, parent = "statsList") {
-  if (!("children" in node)) {
+  if (!node.hasOwnProperty("children")) {
     document.getElementById(parent).innerHTML += `<li>${node.name} 
 <div style="display: float; float: right; padding-right: 2em; color: ${node.color}; font-weight: bold">${node.size}</div></li>`;
     console.log(node.name, node.size);

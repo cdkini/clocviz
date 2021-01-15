@@ -1,0 +1,65 @@
+header {
+  background: #3c4c6c;
+  color: white;
+  grid-area: header;
+  padding: 1em;
+  font-size: 2.2em;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 2fr 1fr 0.5fr;
+  grid-template-areas:
+    "header header header header header"
+    ". left main right .";
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  grid-gap: 2em;
+}
+
+.card {
+  padding: 0.8em;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  background: #ffffff;
+  border-radius: 5px;
+}
+
+main {
+  padding-left: 2em;
+  grid-area: main;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+#legend {
+  list-style-type: none;
+}
+
+#legend li div {
+  float: left;
+  height: 1em;
+  width: 1em;
+  border: 1px solid black;
+  margin-right: 0.5em;
+}
+
+#right {
+  grid-area: right;
+}
+
+#left {
+  grid-area: left;
+}
+
+ul {
+  font-size: 1.5rem;
+}
+
+#left ul {
+  list-style: none;
+  padding-left: 1em;
+}

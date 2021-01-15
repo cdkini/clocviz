@@ -2,262 +2,265 @@ package utils
 
 import (
 	"fmt"
-	"log"
-	"strconv"
 	"time"
 
+	"encoding/json"
 	"math/rand"
 )
 
-func GetLangColor(lang string) string {
+// RGB is a simple wrapper around RGB integers
+type RGB struct {
+	Red   int
+	Green int
+	Blue  int
+}
+
+func NewRGB(red int, green int, blue int) RGB {
+	return RGB{red, green, blue}
+}
+
+func (r RGB) String() string {
+	return fmt.Sprintf("rgb(%v,%v,%v)", r.Red, r.Green, r.Blue)
+}
+
+// Necessary to display RGB as "rgb(r,g,b)" in JSON.
+func (r RGB) MarshalJSON() ([]byte, error) {
+	return json.Marshal(r.String())
+}
+
+// gradate darkens or lightens a given RGB by a given factor or ratio.
+func (r *RGB) gradate(ratio float32) {
+	r.Red = min(int(float32(r.Red)*ratio), 255)
+	r.Green = min(int(float32(r.Green)*ratio), 255)
+	r.Blue = min(int(float32(r.Blue)*ratio), 255)
+}
+
+func averageRGB(color1 *RGB, weight1 int, color2 *RGB, weight2 int) {
+	loc := weight1 + weight2
+	if loc == 0 {
+		return
+	}
+	color1.Red = (color1.Red*weight1 + color2.Red*weight2) / loc
+	color1.Green = (color1.Green*weight1 + color2.Green*weight2) / loc
+	color1.Blue = (color1.Blue*weight1 + color2.Blue*weight2) / loc
+}
+
+func getLangColor(lang string) RGB {
 	if color, ok := COLORS[lang]; ok {
 		return color
 	}
-	// If color is not in COLORS, we save a random color for future usage.
-	rand := getRandomColorInHex()
+	rand := getRandomColor() // If color is not in COLORS, we save a random color for future usage
 	COLORS[lang] = rand
 	return rand
 }
 
-type RGB struct {
-	red   int
-	green int
-	blue  int
-}
-
-func GradateHex(hex string, percentage float32) string {
-	rgb := hexToRGB(hex)
-	red := strconv.FormatInt(int64(float32(rgb.red)*percentage), 16)
-	green := strconv.FormatInt(int64(float32(rgb.green)*percentage), 16)
-	blue := strconv.FormatInt(int64(float32(rgb.blue)*percentage), 16)
-	return fmt.Sprintf("#%v%v%v", red, green, blue)
-}
-
-func getRandomColorInHex() string {
+func getRandomColor() RGB {
 	rand.Seed(time.Now().UnixNano())
 	red := rand.Intn(255)
 	green := rand.Intn(255)
 	blue := rand.Intn(255)
-	hex := "#" + getHex(red) + getHex(green) + getHex(blue)
-	return hex
+	return NewRGB(red, green, blue)
 }
 
-func getHex(num int) string {
-	hex := fmt.Sprintf("%x", num)
-	if len(hex) == 1 {
-		hex = "0" + hex
-	}
-	return hex
-}
-
-func hexToRGB(hex string) *RGB {
-	rgb := &RGB{}
-	_, err := fmt.Sscanf(hex, "#%02x%02x%02x", &rgb.red, &rgb.green, &rgb.blue)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return rgb
-}
-
-// Associations between language name and official color (in hex)
+// Associations between language name and official color.
 // Source: https://github.com/doda/github-language-colors/blob/master/colors.json
-var COLORS = map[string]string{
-	"ABAP":                  "#E8274B",
-	"AGS Script":            "#B9D9FF",
-	"AMPL":                  "#E6EFBB",
-	"ANTLR":                 "#9DC3FF",
-	"API Blueprint":         "#2ACCA8",
-	"APL":                   "#5A8164",
-	"ASP":                   "#6a40fd",
-	"ATS":                   "#1ac620",
-	"ActionScript":          "#882B0F",
-	"Ada":                   "#02f88c",
-	"Agda":                  "#315665",
-	"Alloy":                 "#64C800",
-	"Arc":                   "#aa2afe",
-	"Arduino":               "#bd79d1",
-	"AspectJ":               "#a957b0",
-	"Assembly":              "#6E4C13",
-	"AutoHotkey":            "#6594b9",
-	"AutoIt":                "#1C3552",
-	"BlitzMax":              "#cd6400",
-	"Boo":                   "#d4bec1",
-	"Brainfuck":             "#2F2530",
-	"C Sharp":               "#178600",
-	"C":                     "#555555",
-	"CSS":                   "#563d7c",
-	"Chapel":                "#8dc63f",
-	"Cirru":                 "#ccccff",
-	"Clarion":               "#db901e",
-	"Clean":                 "#3F85AF",
-	"Click":                 "#E4E6F3",
-	"Clojure":               "#db5855",
-	"CoffeeScript":          "#244776",
-	"ColdFusion CFC":        "#ed2cd6",
-	"ColdFusion":            "#ed2cd6",
-	"Common Lisp":           "#3fb68b",
-	"Component Pascal":      "#b0ce4e",
-	"Crystal":               "#776791",
-	"D":                     "#ba595e",
-	"DM":                    "#447265",
-	"Dart":                  "#00B4AB",
-	"Diff":                  "#88dddd",
-	"Dogescript":            "#cca760",
-	"Dylan":                 "#6c616e",
-	"E":                     "#ccce35",
-	"ECL":                   "#8a1267",
-	"Eagle":                 "#814C05",
-	"Eiffel":                "#946d57",
-	"Elixir":                "#6e4a7e",
-	"Elm":                   "#60B5CC",
-	"Emacs Lisp":            "#c065db",
-	"EmberScript":           "#FFF4F3",
-	"Erlang":                "#B83998",
-	"F#":                    "#b845fc",
-	"FLUX":                  "#88ccff",
-	"FORTRAN":               "#4d41b1",
-	"Factor":                "#636746",
-	"Fancy":                 "#7b9db4",
-	"Fantom":                "#dbded5",
-	"Forth":                 "#341708",
-	"FreeMarker":            "#0050b2",
-	"Frege":                 "#00cafe",
-	"Game Maker Language":   "#8fb200",
-	"Glyph":                 "#e4cc98",
-	"Gnuplot":               "#f0a9f0",
-	"Go":                    "#375eab",
-	"Golo":                  "#88562A",
-	"Gosu":                  "#82937f",
-	"Grammatical Framework": "#79aa7a",
-	"Groovy":                "#e69f56",
-	"HTML":                  "#e44b23",
-	"Handlebars":            "#01a9d6",
-	"Harbour":               "#0e60e3",
-	"Haskell":               "#29b544",
-	"Haxe":                  "#df7900",
-	"Hy":                    "#7790B2",
-	"IDL":                   "#a3522f",
-	"Io":                    "#a9188d",
-	"Ioke":                  "#078193",
-	"Isabelle":              "#FEFE00",
-	"J":                     "#9EEDFF",
-	"JFlex":                 "#DBCA00",
-	"JSONiq":                "#40d47e",
-	"Java":                  "#b07219",
-	"JavaScript":            "#f1e05a",
-	"Julia":                 "#a270ba",
-	"Jupyter Notebook":      "#DA5B0B",
-	"KRL":                   "#28431f",
-	"Kotlin":                "#F18E33",
-	"LFE":                   "#004200",
-	"LOLCODE":               "#cc9900",
-	"LSL":                   "#3d9970",
-	"Lasso":                 "#999999",
-	"Latte":                 "#A8FF97",
-	"Lex":                   "#DBCA00",
-	"LiveScript":            "#499886",
-	"LookML":                "#652B81",
-	"Lua":                   "#000080",
-	"MAXScript":             "#00a6a6",
-	"MTML":                  "#b7e1f4",
-	"Makefile":              "#427819",
-	"Mask":                  "#f97732",
-	"Matlab":                "#bb92ac",
-	"Max":                   "#c4a79c",
-	"Mercury":               "#ff2b2b",
-	"Metal":                 "#8f14e9",
-	"Mirah":                 "#c7a938",
-	"NCL":                   "#28431f",
-	"Nemerle":               "#3d3c6e",
-	"NetLinx":               "#0aa0ff",
-	"NetLinx+ERB":           "#747faa",
-	"NetLogo":               "#ff6375",
-	"NewLisp":               "#87AED7",
-	"Nimrod":                "#37775b",
-	"Nit":                   "#009917",
-	"Nix":                   "#7e7eff",
-	"Nu":                    "#c9df40",
-	"OCaml":                 "#3be133",
-	"Objective-C":           "#438eff",
-	"Objective-C++":         "#6866fb",
-	"Objective-J":           "#ff0c5a",
-	"Omgrofl":               "#cabbff",
-	"Opal":                  "#f7ede0",
-	"Oxygene":               "#cdd0e3",
-	"Oz":                    "#fab738",
-	"PAWN":                  "#dbb284",
-	"PHP":                   "#4F5D95",
-	"PLSQL":                 "#dad8d8",
-	"Pan":                   "#cc0000",
-	"Papyrus":               "#6600cc",
-	"Parrot":                "#f3ca0a",
-	"Pascal":                "#b0ce4e",
-	"Perl":                  "#0298c3",
-	"Perl6":                 "#0000fb",
-	"PigLatin":              "#fcd7de",
-	"Pike":                  "#005390",
-	"PogoScript":            "#d80074",
-	"Processing":            "#0096D8",
-	"Prolog":                "#74283c",
-	"Propeller Spin":        "#7fa2a7",
-	"Puppet":                "#302B6D",
-	"Pure Data":             "#91de79",
-	"PureBasic":             "#5a6986",
-	"PureScript":            "#1D222D",
-	"Python":                "#3572A5",
-	"QML":                   "#44a51c",
-	"R":                     "#198ce7",
-	"RAML":                  "#77d9fb",
-	"Racket":                "#22228f",
-	"Ragel in Ruby Host":    "#9d5200",
-	"Rebol":                 "#358a5b",
-	"Red":                   "#ee0000",
-	"Ren'Py":                "#ff7f7f",
-	"Rouge":                 "#cc0088",
-	"Ruby":                  "#701516",
-	"Rust":                  "#dea584",
-	"SAS":                   "#B34936",
-	"SQF":                   "#3F3F3F",
-	"SaltStack":             "#646464",
-	"Scala":                 "#DC322F",
-	"Scheme":                "#1e4aec",
-	"Self":                  "#0579aa",
-	"Shell":                 "#89e051",
-	"Shen":                  "#120F14",
-	"Slash":                 "#007eff",
-	"Slim":                  "#ff8f77",
-	"Smalltalk":             "#596706",
-	"SourcePawn":            "#5c7611",
-	"Squirrel":              "#800000",
-	"Stan":                  "#b2011d",
-	"Standard ML":           "#dc566d",
-	"SuperCollider":         "#46390b",
-	"Swift":                 "#ffac45",
-	"SystemVerilog":         "#DAE1C2",
-	"Tcl":                   "#e4cc98",
-	"TeX":                   "#3D6117",
-	"Turing":                "#45f715",
-	"TypeScript":            "#2b7489",
-	"Unified Parallel C":    "#4e3617",
-	"Unity3D Asset":         "#ab69a1",
-	"UnrealScript":          "#a54c4d",
-	"VHDL":                  "#adb2cb",
-	"Vala":                  "#fbe5cd",
-	"Verilog":               "#b2b7f8",
-	"VimL":                  "#199f4b",
-	"Visual Basic":          "#945db7",
-	"Volt":                  "#1F1F1F",
-	"Vue":                   "#2c3e50",
-	"Web Ontology Language": "#9cc9dd",
-	"X10":                   "#4B6BEF",
-	"XC":                    "#99DA07",
-	"XQuery":                "#5232e7",
-	"Zephir":                "#118f9e",
-	"cpp":                   "#f34b7d",
-	"eC":                    "#913960",
-	"edn":                   "#db5855",
-	"nesC":                  "#94B0C7",
-	"ooc":                   "#b0b77e",
-	"wisp":                  "#7582D1",
-	"xBase":                 "#403a40",
+var COLORS = map[string]RGB{
+	"ABAP":                  NewRGB(232, 39, 75),
+	"AGS Script":            NewRGB(185, 217, 255),
+	"AMPL":                  NewRGB(230, 239, 187),
+	"ANTLR":                 NewRGB(157, 195, 255),
+	"API Blueprint":         NewRGB(42, 204, 168),
+	"APL":                   NewRGB(90, 129, 100),
+	"ASP":                   NewRGB(106, 64, 253),
+	"ATS":                   NewRGB(26, 198, 32),
+	"ActionScript":          NewRGB(136, 43, 15),
+	"Ada":                   NewRGB(2, 248, 140),
+	"Agda":                  NewRGB(49, 86, 101),
+	"Alloy":                 NewRGB(100, 200, 0),
+	"Arc":                   NewRGB(170, 42, 254),
+	"Arduino":               NewRGB(189, 121, 209),
+	"AspectJ":               NewRGB(169, 87, 176),
+	"Assembly":              NewRGB(110, 76, 19),
+	"AutoHotkey":            NewRGB(101, 148, 185),
+	"AutoIt":                NewRGB(28, 53, 82),
+	"BlitzMax":              NewRGB(205, 100, 0),
+	"Boo":                   NewRGB(212, 190, 193),
+	"Brainfuck":             NewRGB(47, 37, 48),
+	"C Sharp":               NewRGB(23, 134, 0),
+	"C":                     NewRGB(85, 85, 85),
+	"CSS":                   NewRGB(86, 61, 124),
+	"Chapel":                NewRGB(141, 198, 63),
+	"Cirru":                 NewRGB(204, 204, 255),
+	"Clarion":               NewRGB(219, 144, 30),
+	"Clean":                 NewRGB(63, 133, 175),
+	"Click":                 NewRGB(228, 230, 243),
+	"Clojure":               NewRGB(219, 88, 85),
+	"CoffeeScript":          NewRGB(36, 71, 118),
+	"ColdFusion CFC":        NewRGB(237, 44, 214),
+	"ColdFusion":            NewRGB(237, 44, 214),
+	"Common Lisp":           NewRGB(63, 182, 139),
+	"Component Pascal":      NewRGB(176, 206, 78),
+	"Crystal":               NewRGB(119, 103, 145),
+	"D":                     NewRGB(186, 89, 94),
+	"DM":                    NewRGB(68, 114, 101),
+	"Dart":                  NewRGB(0, 180, 171),
+	"Diff":                  NewRGB(136, 221, 221),
+	"Dogescript":            NewRGB(204, 167, 96),
+	"Dylan":                 NewRGB(108, 97, 110),
+	"E":                     NewRGB(204, 206, 53),
+	"ECL":                   NewRGB(138, 18, 103),
+	"Eagle":                 NewRGB(129, 76, 5),
+	"Eiffel":                NewRGB(148, 109, 87),
+	"Elixir":                NewRGB(110, 74, 126),
+	"Elm":                   NewRGB(96, 181, 204),
+	"Emacs Lisp":            NewRGB(192, 101, 219),
+	"EmberScript":           NewRGB(255, 244, 243),
+	"Erlang":                NewRGB(184, 57, 152),
+	"F#":                    NewRGB(184, 69, 252),
+	"FLUX":                  NewRGB(136, 204, 255),
+	"FORTRAN":               NewRGB(77, 65, 177),
+	"Factor":                NewRGB(99, 103, 70),
+	"Fancy":                 NewRGB(123, 157, 180),
+	"Fantom":                NewRGB(219, 222, 213),
+	"Forth":                 NewRGB(52, 23, 8),
+	"FreeMarker":            NewRGB(0, 80, 178),
+	"Frege":                 NewRGB(0, 202, 254),
+	"Game Maker Language":   NewRGB(143, 178, 0),
+	"Glyph":                 NewRGB(228, 204, 152),
+	"Gnuplot":               NewRGB(240, 169, 240),
+	"Go":                    NewRGB(55, 94, 171),
+	"Golo":                  NewRGB(136, 86, 42),
+	"Gosu":                  NewRGB(130, 147, 127),
+	"Grammatical Framework": NewRGB(121, 170, 122),
+	"Groovy":                NewRGB(230, 159, 86),
+	"HTML":                  NewRGB(228, 75, 35),
+	"Handlebars":            NewRGB(1, 169, 214),
+	"Harbour":               NewRGB(14, 96, 227),
+	"Haskell":               NewRGB(41, 181, 68),
+	"Haxe":                  NewRGB(223, 121, 0),
+	"Hy":                    NewRGB(119, 144, 178),
+	"IDL":                   NewRGB(163, 82, 47),
+	"Io":                    NewRGB(169, 24, 141),
+	"Ioke":                  NewRGB(7, 129, 147),
+	"Isabelle":              NewRGB(254, 254, 0),
+	"J":                     NewRGB(158, 237, 255),
+	"JFlex":                 NewRGB(219, 202, 0),
+	"JSONiq":                NewRGB(64, 212, 126),
+	"Java":                  NewRGB(176, 114, 25),
+	"JavaScript":            NewRGB(241, 224, 90),
+	"Julia":                 NewRGB(162, 112, 186),
+	"Jupyter Notebook":      NewRGB(218, 91, 11),
+	"KRL":                   NewRGB(40, 67, 31),
+	"Kotlin":                NewRGB(241, 142, 51),
+	"LFE":                   NewRGB(0, 66, 0),
+	"LOLCODE":               NewRGB(204, 153, 0),
+	"LSL":                   NewRGB(61, 153, 112),
+	"Lasso":                 NewRGB(153, 153, 153),
+	"Latte":                 NewRGB(168, 255, 151),
+	"Lex":                   NewRGB(219, 202, 0),
+	"LiveScript":            NewRGB(73, 152, 134),
+	"LookML":                NewRGB(101, 43, 129),
+	"Lua":                   NewRGB(0, 0, 128),
+	"MAXScript":             NewRGB(0, 166, 166),
+	"MTML":                  NewRGB(183, 225, 244),
+	"Makefile":              NewRGB(66, 120, 25),
+	"Mask":                  NewRGB(249, 119, 50),
+	"Matlab":                NewRGB(187, 146, 172),
+	"Max":                   NewRGB(196, 167, 156),
+	"Mercury":               NewRGB(255, 43, 43),
+	"Metal":                 NewRGB(143, 20, 233),
+	"Mirah":                 NewRGB(199, 169, 56),
+	"NCL":                   NewRGB(40, 67, 31),
+	"Nemerle":               NewRGB(61, 60, 110),
+	"NetLinx":               NewRGB(10, 160, 255),
+	"NetLinx+ERB":           NewRGB(116, 127, 170),
+	"NetLogo":               NewRGB(255, 99, 117),
+	"NewLisp":               NewRGB(135, 174, 215),
+	"Nimrod":                NewRGB(55, 119, 91),
+	"Nit":                   NewRGB(0, 153, 23),
+	"Nix":                   NewRGB(126, 126, 255),
+	"Nu":                    NewRGB(201, 223, 64),
+	"OCaml":                 NewRGB(59, 225, 51),
+	"Objective-C":           NewRGB(67, 142, 255),
+	"Objective-C++":         NewRGB(104, 102, 251),
+	"Objective-J":           NewRGB(255, 12, 90),
+	"Omgrofl":               NewRGB(202, 187, 255),
+	"Opal":                  NewRGB(247, 237, 224),
+	"Oxygene":               NewRGB(205, 208, 227),
+	"Oz":                    NewRGB(250, 183, 56),
+	"PAWN":                  NewRGB(219, 178, 132),
+	"PHP":                   NewRGB(79, 93, 149),
+	"PLSQL":                 NewRGB(218, 216, 216),
+	"Pan":                   NewRGB(204, 0, 0),
+	"Papyrus":               NewRGB(102, 0, 204),
+	"Parrot":                NewRGB(243, 202, 10),
+	"Pascal":                NewRGB(176, 206, 78),
+	"Perl":                  NewRGB(2, 152, 195),
+	"Perl6":                 NewRGB(0, 0, 251),
+	"PigLatin":              NewRGB(252, 215, 222),
+	"Pike":                  NewRGB(0, 83, 144),
+	"PogoScript":            NewRGB(216, 0, 116),
+	"Processing":            NewRGB(0, 150, 216),
+	"Prolog":                NewRGB(116, 40, 60),
+	"Propeller Spin":        NewRGB(127, 162, 167),
+	"Puppet":                NewRGB(48, 43, 109),
+	"Pure Data":             NewRGB(145, 222, 121),
+	"PureBasic":             NewRGB(90, 105, 134),
+	"PureScript":            NewRGB(29, 34, 45),
+	"Python":                NewRGB(53, 114, 165),
+	"QML":                   NewRGB(68, 165, 28),
+	"R":                     NewRGB(25, 140, 231),
+	"RAML":                  NewRGB(119, 217, 251),
+	"Racket":                NewRGB(34, 34, 143),
+	"Ragel in Ruby Host":    NewRGB(157, 82, 0),
+	"Rebol":                 NewRGB(53, 138, 91),
+	"Red":                   NewRGB(238, 0, 0),
+	"Ren'Py":                NewRGB(255, 127, 127),
+	"Rouge":                 NewRGB(204, 0, 136),
+	"Ruby":                  NewRGB(112, 21, 22),
+	"Rust":                  NewRGB(222, 165, 132),
+	"SAS":                   NewRGB(179, 73, 54),
+	"SQF":                   NewRGB(63, 63, 63),
+	"SaltStack":             NewRGB(100, 100, 100),
+	"Scala":                 NewRGB(220, 50, 47),
+	"Scheme":                NewRGB(30, 74, 236),
+	"Self":                  NewRGB(5, 121, 170),
+	"Shell":                 NewRGB(137, 224, 81),
+	"Shen":                  NewRGB(18, 15, 20),
+	"Slash":                 NewRGB(0, 126, 255),
+	"Slim":                  NewRGB(255, 143, 119),
+	"Smalltalk":             NewRGB(89, 103, 6),
+	"SourcePawn":            NewRGB(92, 118, 17),
+	"Squirrel":              NewRGB(128, 0, 0),
+	"Stan":                  NewRGB(178, 1, 29),
+	"Standard ML":           NewRGB(220, 86, 109),
+	"SuperCollider":         NewRGB(70, 57, 11),
+	"Swift":                 NewRGB(255, 172, 69),
+	"SystemVerilog":         NewRGB(218, 225, 194),
+	"Tcl":                   NewRGB(228, 204, 152),
+	"TeX":                   NewRGB(61, 97, 23),
+	"Turing":                NewRGB(69, 247, 21),
+	"TypeScript":            NewRGB(43, 116, 137),
+	"Unified Parallel C":    NewRGB(78, 54, 23),
+	"Unity3D Asset":         NewRGB(171, 105, 161),
+	"UnrealScript":          NewRGB(165, 76, 77),
+	"VHDL":                  NewRGB(173, 178, 203),
+	"Vala":                  NewRGB(251, 229, 205),
+	"Verilog":               NewRGB(178, 183, 248),
+	"VimL":                  NewRGB(25, 159, 75),
+	"Visual Basic":          NewRGB(148, 93, 183),
+	"Volt":                  NewRGB(31, 31, 31),
+	"Vue":                   NewRGB(44, 62, 80),
+	"Web Ontology Language": NewRGB(156, 201, 221),
+	"X10":                   NewRGB(75, 107, 239),
+	"XC":                    NewRGB(153, 218, 7),
+	"XQuery":                NewRGB(82, 50, 231),
+	"Zephir":                NewRGB(17, 143, 158),
+	"cpp":                   NewRGB(243, 75, 125),
+	"eC":                    NewRGB(145, 57, 96),
+	"edn":                   NewRGB(219, 88, 85),
+	"nesC":                  NewRGB(148, 176, 199),
+	"ooc":                   NewRGB(176, 183, 126),
+	"wisp":                  NewRGB(117, 130, 209),
+	"xBase":                 NewRGB(64, 58, 64),
 }
