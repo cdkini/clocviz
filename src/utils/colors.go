@@ -36,9 +36,13 @@ func (r *RGB) gradate(ratio float32) {
 }
 
 func averageRGB(color1 *RGB, weight1 int, color2 *RGB, weight2 int) {
-	color1.Red = (color1.Red*weight1 + color2.Red*weight2) / (weight1 + weight2)
-	color1.Green = (color1.Green*weight1 + color2.Green*weight2) / (weight1 + weight2)
-	color1.Blue = (color1.Blue*weight1 + color2.Blue*weight2) / (weight1 + weight2)
+	loc := weight1 + weight2
+	if loc == 0 {
+		return
+	}
+	color1.Red = (color1.Red*weight1 + color2.Red*weight2) / loc
+	color1.Green = (color1.Green*weight1 + color2.Green*weight2) / loc
+	color1.Blue = (color1.Blue*weight1 + color2.Blue*weight2) / loc
 }
 
 func getLangColor(lang string) RGB {
