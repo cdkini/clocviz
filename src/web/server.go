@@ -43,7 +43,7 @@ func Serve(content Content, port int) {
 
 	url := fmt.Sprintf("http://localhost:%v", port)
 	fmt.Printf("Running on %s\n", url)
-	fmt.Println("Press 'Ctrl + C' to exit")
+	fmt.Println("Press 'Ctrl-C' to exit")
 	openBrowser(url)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
