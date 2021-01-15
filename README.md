@@ -57,13 +57,13 @@ clocviz can either be run on a local directory on your machine or on a target re
 
 ```
 // Local Directories
-clocviz [dir]             // Ex: clocviz . will visualize your pwd
+clocviz [dir]             // Ex: 'clocviz .' will visualize your pwd
 
 // Remote Git Repos
-clocviz [user]/[dir]      // Ex: clocviz BurntSushi/ripgrep will visualize https://github.com/BurntSushi/ripgrep
+clocviz [user]/[dir]      // Ex: 'clocviz BurntSushi/ripgrep' will visualize https://github.com/BurntSushi/ripgrep
 ```
 
-The command will start a web server (on port 8080 by default), open localhost on your default browser, and render your interactive chart therein.
+The command will start a web server (on `port 8080` by default), open localhost on your default browser, and render your interactive chart therein.
 
 ## Contributing
 
@@ -75,7 +75,7 @@ Although clocviz was designed as an educational project, any contributions or su
 3. Create a branch*
 4. Make your changes
 5. Write unit tests as applicable
-6. Format the codebase using 'go fmt'**
+6. Format the codebase using 'go fmt'*
 7. Ensure that your changes passes all tests using 'go test'
 8. Squash your changes to as few commits as possible*
 9. Make a pull request*
