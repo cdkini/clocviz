@@ -44,7 +44,7 @@ main {
   height: 1em;
   width: 1em;
   border: 1px solid black;
-  clear: both;
+  margin-right: 0.5em;
 }
 
 #right {
@@ -53,4 +53,13 @@ main {
 
 #left {
   grid-area: left;
+}
+
+ul {
+  font-size: 1.5rem;
+}
+
+#left ul {
+  list-style: none;
+  padding-left: 1em;
 }

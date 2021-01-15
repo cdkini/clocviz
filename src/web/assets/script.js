@@ -11,7 +11,7 @@ languages.forEach(
   (language) =>
     (document.getElementById(
       "legend"
-    ).innerHTML += `<li><div class="box ${language}"></div>${language}</li>`)
+    ).innerHTML += `<li><div class="box ${language}"></div>  ${language}</li>`)
 );
 
 data.children.forEach((child) =>
@@ -31,15 +31,19 @@ function clear(id) {
   document.getElementById(id).innerHTML = "";
 }
 
-function populateStats(node) {
+function populateStats(node, parent = "statsList") {
   if (!node.hasOwnProperty("children")) {
-    document.getElementById(
-      "statsList"
-    ).innerHTML += `<li>${node.name}: ${node.size}</li>`;
+    document.getElementById(parent).innerHTML += `<li>${node.name} 
+<div style="display: float; float: right; padding-right: 2em; color: ${node.color}; font-weight: bold">${node.size}</div></li>`;
     console.log(node.name, node.size);
   } else {
-    console.log("Folder", node.name);
-    node.children.map(populateStats);
+    let nestedId = `li_${node.name}`;
+    document.getElementById(parent).innerHTML += `
+<li>/<b>${node.name}</b></li>
+  <ul id=${nestedId}>
+`;
+    node.children.map((node) => populateStats(node, nestedId));
+    document.getElementById(parent).innerHTML += `</ul>`;
   }
 }
 
