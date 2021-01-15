@@ -5,31 +5,32 @@ import (
 	"log"
 	"os"
 
+	// "net/http"
+
+	// "github.com/GeertJohan/go.rice"
 	"github.com/cdkini/clocviz/src/utils"
 	"github.com/cdkini/clocviz/src/web"
 )
 
 func main() {
 	if len(os.Args) != 2 {
-		log.Fatal("clocviz: Usage 'clocviz [src] [optional: git hash/branch]'")
+		log.Fatal("clocviz: Usage 'clocviz [src]'")
 	}
 
 	// Run cloc to generate file system and related stats
-	in := os.Args[1]
-	raw, err := utils.RunCloc(in)
+	raw, err := utils.RunCloc(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	// Parse data and separate into two JSON objects
+	// Parse data and aggregate into object to be fed into template
 	data := utils.ParseResults(raw)
 	byLang := utils.GetLinesByLang(data)
 	byFile := utils.GetLinesByFile(data)
-
-	// Feed data into HTML/CSS/JS and render to browser
 	content := web.NewContent("Test", byLang, byFile)
-	web.GenerateHTML(content)
-	utils.OpenBrowser("out.html")
+
+	// Feed data into HTML/CSS/JS, start server, and render to browser
+	web.Serve(content, 8080)
 
 	os.Exit(0)
 }
