@@ -12,9 +12,9 @@ func init() {
 	// define files
 	file2 := &embedded.EmbeddedFile{
 		Filename:    "index.tmpl",
-		FileModTime: time.Unix(1610724190, 0),
+		FileModTime: time.Unix(1610738115, 0),
 
-		Content: string("<!DOCTYPE html>\n<html lang=\"en\">\n  \n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <script src=\"https://unpkg.com/sunburst-chart\"></script>\n    <link rel=\"stylesheet\" href=\"/src/static/styles.css\">\n    <title>clocviz</title>\n  </head>\n  \n  <body>\n    <header>clocviz</header>\n\n    \n    <main>\n      <div class=\"card\">\n      <h1>Chart</h1>\n      <div class=\"container\">\n        <div id=\"chart\">\n          <script>\n            function testFunc() {\n                console.log(\"Hi\");\n            }\n            const data = {{.ByLang}}\n            const myChart = Sunburst()\n                  .width(800)  /* Make chart size occupy % of width */\n                  .height(1000)\n                  .size(\"size\")\n                  .excludeRoot(true)\n                  .showLabels(true)\n                  .data(data)\n                  .onClick((node) => {\n                      myChart.focusOnNode(node);\n                      wrapper(\"statsList\", node);\n                  })\n                  .color(\"color\")(document.getElementById(\"chart\"));\n          </script>\n        </div>\n      </div>\n      </div>\n    </main>\n\n    <div id=\"right\">\n      <div class=\"card\">\n      <h2>Legend</h2>\n      <ul id=\"legend\">\n      </ul>\n      </div>\n    </div>\n\n    <div id=\"left\">\n      <div class=\"card\">\n        <h2>File structure\n          <div style=\"display: float; float: right\">Lines of code</div>\n        </h2>\n        <ul id=\"statsList\"></ul>\n      </div>\n    </div>\n  </body>\n\n  <script src=\"/src/static/script.js\"></script>\n</html>\n"),
+		Content: string("<!DOCTYPE html>\n<html lang=\"en\">\n  \n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <script src=\"https://unpkg.com/sunburst-chart\"></script>\n    <link rel=\"stylesheet\" href=\"/src/static/styles.css\">\n    <title>clocviz</title>\n  </head>\n  \n  <body>\n    <header>clocviz</header>\n\n    \n    <main>\n      <div class=\"card\">\n      <h1>BurntSushi/ripgrep</h1>\n      <div class=\"container\">\n        <div id=\"chart\">\n          <script>\n            function testFunc() {\n                console.log(\"Hi\");\n            }\n            const data = {{.ByLang}}\n            const myChart = Sunburst()\n                  .width(800)  /* Make chart size occupy % of width */\n                  .height(1000)\n                  .size(\"size\")\n                  .excludeRoot(true)\n                  .showLabels(true)\n                  .data(data)\n                  .onClick((node) => {\n                      myChart.focusOnNode(node);\n                      wrapper(\"statsList\", node);\n                  })\n                  .color(\"color\")(document.getElementById(\"chart\"));\n          </script>\n        </div>\n      </div>\n      </div>\n    </main>\n\n    <div id=\"right\">\n      <div class=\"card\">\n      <h2>Legend</h2>\n      <ul id=\"legend\">\n      </ul>\n      </div>\n    </div>\n\n    <div id=\"left\">\n      <div class=\"card\">\n        <h2>File structure\n          <div style=\"display: float; float: right\">Lines of code</div>\n        </h2>\n        <ul id=\"statsList\"></ul>\n      </div>\n    </div>\n  </body>\n\n  <script src=\"/src/static/script.js\"></script>\n</html>\n"),
 	}
 	file3 := &embedded.EmbeddedFile{
 		Filename:    "script.js",
@@ -32,7 +32,7 @@ func init() {
 	// define dirs
 	dir1 := &embedded.EmbeddedDir{
 		Filename:   "",
-		DirModTime: time.Unix(1610683365, 0),
+		DirModTime: time.Unix(1610737947, 0),
 		ChildFiles: []*embedded.EmbeddedFile{
 			file2, // "index.tmpl"
 			file3, // "script.js"
@@ -47,7 +47,7 @@ func init() {
 	// register embeddedBox
 	embedded.RegisterEmbeddedBox(`../static`, &embedded.EmbeddedBox{
 		Name: `../static`,
-		Time: time.Unix(1610683365, 0),
+		Time: time.Unix(1610737947, 0),
 		Dirs: map[string]*embedded.EmbeddedDir{
 			"": dir1,
 		},

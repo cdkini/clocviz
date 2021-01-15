@@ -1,4 +1,5 @@
 <h1 align="center">clocviz</h1>
+<img alt="clocviz_example" src="img/example.png">
 <h2 align="center"><i>Create interactive visualizations out of your codebases!</i></h2>
 
 <p align="center">
