@@ -26,7 +26,7 @@ Please note that clocviz is an extension of [cloc](https://github.com/AlDanial/c
 - [Usage](#Usage)
 - [Contributing](#Contributing)
 - [Credits](#Credits)
-- [License](#License).
+- [License](#License)
 
 ## Installation
 
