@@ -10,7 +10,7 @@ const languages = data.children.map(child => child.name);
 
 languages.forEach(language => 
     document.getElementById('legend').innerHTML +=
-        `<li><div class="box ${language}"></div>${language}</li>`
+        `<li><div class="box ${language}"></div>  ${language}</li>`
 );
 
 data.children.forEach(child => 
@@ -21,7 +21,33 @@ data.children.forEach(child =>
   `)
 );
 
+function wrapper(id, node) {
+  clear(id);
+  populateStats(node);
+}
 
+function clear(id) {
+  document.getElementById(id).innerHTML = "";
+}
 
+function populateStats(node, parent = "statsList") {
+    if (!node.hasOwnProperty("children")) {
+        document.getElementById(parent)
+            .innerHTML += `<li>${node.name} 
+<div style="display: float; float: right; padding-right: 2em; color: ${node.color}; font-weight: bold">${node.size}</div></li>`;
+        console.log(node.name, node.size);
+    } else {
+        let nestedId = `li_${node.name}`;
+        document.getElementById(parent)
+            .innerHTML += `
+<li>/<b>${node.name}</b></li>
+  <ul id=${nestedId}>
+`;
+        node.children.map(node => populateStats(node, nestedId));
+        document.getElementById(parent)
+            .innerHTML += `</ul>`;
+    }
+}
 
+wrapper("statsList", data);
 

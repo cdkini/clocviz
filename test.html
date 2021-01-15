@@ -15,7 +15,7 @@
     
     <main>
       <div class="card">
-      <h1>Test1</h1>
+      <h1>Chart</h1>
       <div class="container">
         <div id="chart">
           <script>
@@ -30,10 +30,10 @@
                   .excludeRoot(true)
                   .showLabels(true)
                   .data(data)
-                  /*.onClick(() => {
-                      console.log("Hi");
-                      
-                      myChart.focusOnNode();})*/
+                  .onClick((node) => {
+                      myChart.focusOnNode(node);
+                      wrapper("statsList", node);
+                  })
                   .color("color")(document.getElementById("chart"));
           </script>
         </div>
@@ -51,8 +51,10 @@
 
     <div id="left">
       <div class="card">
-        <h2>Stats</h2>
-        test
+        <h2>File structure
+          <div style="display: float; float: right">Lines of code</div>
+        </h2>
+        <ul id="statsList"></ul>
       </div>
     </div>
   </body>
