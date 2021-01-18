@@ -14,7 +14,7 @@
   </a>
 </p>
     
-clocviz is a command line tool used to analyze a target codebase and render interactive visualizations; users can traverse the file tree with a simple mouse click and see statistics including lines by file, lines by language, percentage composition per language, etc.
+clocviz is a command-line tool used to analyze a target codebase and render interactive visualizations; users can traverse the file tree with a simple mouse click and see statistics including lines by file, lines by language, percentage composition per language, etc.
 
 clocviz is primarily written in Go, using the language's templates and web server capabilities to reduce dependencies. Visualizations are performed through D3.js and vanilla HTML/CSS/JS.
 
